@@ -53,6 +53,10 @@ import { handleValidatePWDUserRequest } from './functions/user/validate_pwd';
 
 import { handleSaveTempTokenDatabaseRequest } from './functions/database/save_temp_token';
 
+import { handleVerifyTwoFactorRequest } from './functions/two_factor/verify';
+import { handleEnableTwoFactorRequest } from './functions/two_factor/enable';
+import { handleDisableTwoFactorRequest } from './functions/two_factor/disable';
+
 //: Express and Body Parser setup
 const app = express();
 const jsonParser = bodyParser.json()
@@ -119,6 +123,10 @@ app.post('/user/user_details', limiter, jsonParser, handleUserDetailsUserRequest
 app.post('/user/validate_pwd', limiter, jsonParser, handleValidatePWDUserRequest);
 
 app.post('/database/save_temp_token', limiter, jsonParser, handleSaveTempTokenDatabaseRequest);
+
+app.post('/two_factor/verify', limiter, jsonParser, handleVerifyTwoFactorRequest);
+app.post('/two_factor/enable', limiter, jsonParser, handleEnableTwoFactorRequest);
+app.post('/two_factor/disable', limiter, jsonParser, handleDisableTwoFactorRequest);
 
 app.listen(3000, () => {
   console.log('Solun-API server started at port 3000');
