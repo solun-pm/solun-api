@@ -51,6 +51,8 @@ import { handleLoginUserRequest } from './functions/user/login';
 import { handleUserDetailsUserRequest } from './functions/user/user_details';
 import { handleValidatePWDUserRequest } from './functions/user/validate_pwd';
 
+import { handleSaveTempTokenDatabaseRequest } from './functions/database/save_temp_token';
+
 //: Express and Body Parser setup
 const app = express();
 const jsonParser = bodyParser.json()
@@ -115,6 +117,8 @@ app.post('/user/jwt_details', limiter, jsonParser, handleJWTDetailsUserRequest);
 app.post('/user/login', limiter, jsonParser, handleLoginUserRequest);
 app.post('/user/user_details', limiter, jsonParser, handleUserDetailsUserRequest);
 app.post('/user/validate_pwd', limiter, jsonParser, handleValidatePWDUserRequest);
+
+app.post('/database/save_temp_token', limiter, jsonParser, handleSaveTempTokenDatabaseRequest);
 
 app.listen(3000, () => {
   console.log('Solun-API server started at port 3000');
