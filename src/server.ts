@@ -41,6 +41,16 @@ import { handleUploadFileRequest } from './functions/file/upload';
 import { handleDownloadFileRequest } from './functions/file/download';
 import { handleDeleteFileRequest } from './functions/file/delete';
 
+import { handleBetaFeaturesUserRequest } from './functions/user/beta_features';
+import { handleChangePWDUserRequest } from './functions/user/change_pwd';
+import { handleCheckUserRequest } from './functions/user/check';
+import { handleCreateUserRequest } from './functions/user/create';
+import { handleFastLoginUserRequest } from './functions/user/fast_login';
+import { handleJWTDetailsUserRequest } from './functions/user/jwt_details';
+import { handleLoginUserRequest } from './functions/user/login';
+import { handleUserDetailsUserRequest } from './functions/user/user_details';
+import { handleValidatePWDUserRequest } from './functions/user/validate_pwd';
+
 //: Express and Body Parser setup
 const app = express();
 const jsonParser = bodyParser.json()
@@ -95,6 +105,16 @@ app.post('/file/receive', limiter, jsonParser, handleReceiveFileRequest);
 app.post('/file/upload', upload.single('file'), handleUploadFileRequest);
 app.post('/file/download', limiter, jsonParser, handleDownloadFileRequest);
 app.post('/file/delete', limiter, jsonParser, handleDeleteFileRequest);
+
+app.post('/user/beta_features', limiter, jsonParser, handleBetaFeaturesUserRequest);
+app.post('/user/change_pwd', limiter, jsonParser, handleChangePWDUserRequest);
+app.post('/user/check', limiter, jsonParser, handleCheckUserRequest);
+app.post('/user/create', limiter, jsonParser, handleCreateUserRequest);
+app.post('/user/fast_login', limiter, jsonParser, handleFastLoginUserRequest);
+app.post('/user/jwt_details', limiter, jsonParser, handleJWTDetailsUserRequest);
+app.post('/user/login', limiter, jsonParser, handleLoginUserRequest);
+app.post('/user/user_details', limiter, jsonParser, handleUserDetailsUserRequest);
+app.post('/user/validate_pwd', limiter, jsonParser, handleValidatePWDUserRequest);
 
 app.listen(3000, () => {
   console.log('Solun-API server started at port 3000');
