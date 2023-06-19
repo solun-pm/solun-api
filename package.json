@@ -20,7 +20,9 @@
   },
   "homepage": "https://github.com/solun-pm/solun-api#readme",
   "dependencies": {
+    "@openpgp/web-stream-tools": "^0.0.13",
     "@types/node": "^20.3.1",
+    "base32-decode": "^1.0.0",
     "body-parser": "^1.20.2",
     "chalk": "^4.1.2",
     "dotenv": "^16.3.1",
