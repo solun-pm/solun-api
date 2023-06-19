@@ -1,6 +1,7 @@
 import { generateID, generateAES, generateIV, decryptTransfer, hashPassword } from "solun-general-package";
 import { dbConnect, File } from "solun-database-package";
 import { encryptFile } from "solun-server-encryption-package";
+import { birdLog } from 'solun-database-package';
 
 import { Request, Response } from 'express';
 
@@ -70,7 +71,7 @@ export async function handleUploadFileRequest(req: Request, res: Response) {
             link: link,
         });
     } catch (err) {
-        console.log(err);
+        birdLog('uploadFileRequest', err, 'error');
         return res.status(500).json({ message: err });
     }
 }

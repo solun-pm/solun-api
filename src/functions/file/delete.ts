@@ -1,5 +1,6 @@
 import { dbConnect, findOneDocument, deleteOneDocument, File } from "solun-database-package";
 import { encryptFile } from "solun-server-encryption-package";
+import { birdLog } from 'solun-database-package';
 
 import fs from "fs";
 import { Request, Response } from 'express';
@@ -99,7 +100,7 @@ export async function handleDeleteFileRequest(req: Request, res: Response) {
             return res.status(404).json({ message: "No file found with this ID" });
         }
     } catch (err) {
-        console.error(err);
+        birdLog('deleteFileRequest', err, 'error');
         return res.status(500).json({ message: "An error occurred while deleting the message, please try again: " + err });
     }
 }

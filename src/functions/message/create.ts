@@ -2,6 +2,7 @@ import { generateID, generateAES, decryptTransfer, hashPassword } from 'solun-ge
 import { dbConnect, Message } from 'solun-database-package';
 import { encrypt } from 'solun-server-encryption-package';
 import { Request, Response } from 'express';
+import { birdLog } from 'solun-database-package';
 
 export async function handleCreateMessageRequest(req: Request, res: Response) {
     try {
@@ -49,7 +50,7 @@ export async function handleCreateMessageRequest(req: Request, res: Response) {
 
         return res.status(200).json({ message: "Message created successfully", message_id: mid, link: link });
     } catch (err) {
-        console.log(err)
+        birdLog('createMessageRequest', err, 'error');
         return res.status(500).json({ message: "An error occurred while creating the message, please try again" });
     }
 };

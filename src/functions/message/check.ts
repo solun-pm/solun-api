@@ -1,5 +1,6 @@
 import { dbConnect, findOneDocument, Message } from 'solun-database-package';
 import { Request, Response } from 'express';
+import { birdLog } from 'solun-database-package';
 
 export async function handleCheckMessageRequest(req: Request, res: Response) {
     try {
@@ -20,7 +21,7 @@ export async function handleCheckMessageRequest(req: Request, res: Response) {
             return res.status(404).json({ valid: false, message: "No message found with this ID" });
         }
     } catch (err) {
-        console.log(err)
+        birdLog('checkMessageRequest', err, 'error');
         return res.status(500).json({ valid: false, message: "An error occurred while checking the message, please try again" });
     }
 };

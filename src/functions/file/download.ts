@@ -1,5 +1,6 @@
 import { dbConnect, findOneDocument, File } from "solun-database-package";
 import { decryptFile } from "solun-server-encryption-package";
+import { birdLog } from 'solun-database-package';
 
 import fs from "fs";
 import mime from "mime";
@@ -40,7 +41,7 @@ export async function handleDownloadFileRequest(req: Request, res: Response) {
             return res.status(404).json({ message: "No file found with this ID" });
         }
     } catch (err) {
-        console.error(err);
+        birdLog('downloadFileRequest', err, 'error');
         return res.status(500).json({ message: "An error occurred while retrieving the file, please check if the link is correct and try again" });
     }
 }

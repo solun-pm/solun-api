@@ -1,13 +1,16 @@
-import express from 'express';
-import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
 import path from 'path';
+import express from 'express';
+import rateLimit from 'express-rate-limit';
 var bodyParser = require('body-parser')
 import morgan from 'morgan';
 import chalk from 'chalk';
 
 // Load environment variables:
 dotenv.config({ path: path.join(__dirname, '.env.local') });
+
+// Import bird handler api log function:
+import { birdApiLog } from 'solun-database-package';
 
 // Multer setup for file uploads:
 import multer from 'multer';
@@ -55,6 +58,14 @@ const limiter = rateLimit({
 });
 
 export const morganMiddleware = morgan(function (tokens, req, res) {
+  birdApiLog(tokens.method(req, res) as string,
+             parseInt(tokens.status(req, res) as string) as number,
+             tokens.url(req, res) as string,
+             parseInt(tokens['response-time'](req, res) as string) as number,
+             tokens['remote-addr'](req, res) as string,
+             tokens.referrer(req, res) as string || 'none',
+             tokens['user-agent'](req, res) as string
+            );
   return [
       chalk.hex('#ff4757').bold('🕊️  SOLUN-API --> '),
       chalk.hex('#34ace0').bold(tokens.method(req, res)),
