@@ -6,13 +6,16 @@ var bodyParser = require('body-parser')
 import morgan from 'morgan';
 import chalk from 'chalk';
 
+// Load environment variables:
+dotenv.config({ path: path.join(__dirname, '.env.local') });
+
 // Multer setup for file uploads:
 import multer from 'multer';
 import crypto from "crypto";
 import { extname } from "path";
 
 const storage = multer.diskStorage({
-    destination: '/home/daniel/tmp/',
+    destination: process.env.FILE_DESTINATION_PATH,
     filename: function (req, file, cb) {
         const uniqueSuffix = `${crypto.randomBytes(64).toString('hex')}`;
         const extension = extname(file.originalname).slice(1);
@@ -22,10 +25,6 @@ const storage = multer.diskStorage({
 })
 
 const upload = multer({ storage: storage });
-
-
-// Load environment variables:
-dotenv.config({ path: path.join(__dirname, '.env.local') });
 
 // Routes:
 import { handleCreateMessageRequest } from './functions/message/create';
