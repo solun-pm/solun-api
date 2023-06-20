@@ -1,6 +1,6 @@
 import { dbConnect, findOneCASEDocument, User } from "solun-database-package";
 import jwt from "jsonwebtoken";
-import { decrypt } from "solun-server-encryption-package";
+import { decryptAuthPM } from "solun-general-package";
 import { generateTempToken, comparePassword } from "solun-general-package";
 import { Request, Response } from 'express';
 
@@ -22,7 +22,7 @@ export async function handleLoginUserRequest(req: Request, res: Response) {
       return res.status(400).json({ message: "User does not exist or password is incorrect" });
     }
 
-    const decryptedPrivateKey = decrypt(user.private_key, password) as any;
+    const decryptedPrivateKey = decryptAuthPM(user.private_key, password) as any;
 
     if (decryptedPrivateKey == "") {
       return res.status(400).json({ message: "User does not exist or password is incorrect" });
