@@ -1,5 +1,6 @@
 import { dbConnect, deleteOneDocument, Message } from "solun-database-package";
 import { Request, Response } from "express";
+import { birdLog } from 'solun-database-package';
 
 export async function handleDeleteMessageRequest(req: Request, res: Response) {
   try {
@@ -20,7 +21,7 @@ export async function handleDeleteMessageRequest(req: Request, res: Response) {
         return res.status(404).json({ message: "No message found with this ID" });
     }
   } catch (err) {
-    console.log(err);
+    birdLog('deleteMessageRequest', err, 'error');
     return res.status(500).json({ message: "An error occurred while deleting the message, please try again" });
   }
 }
