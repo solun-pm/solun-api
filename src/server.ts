@@ -90,7 +90,13 @@ const userLimiter = rateLimit({
 });
 
 // CORS setup:
-app.use(cors());
+app.use(cors(
+  {
+    origin: '*',
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['*'],
+  }
+));
 
 export const morganMiddleware = morgan(function (tokens, req, res) {
   birdApiLog(tokens.method(req, res) as string,
