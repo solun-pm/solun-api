@@ -22,4 +22,4 @@ ENV NEXT_PUBLIC_MAIL_HOST=
 ENV NEXT_PUBLIC_IMAP_PORT=
 ENV NEXT_PUBLIC_SMTP_PORT=
 
-CMD npm run build && npm run start
+CMD npm run live && npm run start
