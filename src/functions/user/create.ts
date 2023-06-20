@@ -1,8 +1,7 @@
 import { Request, Response } from 'express';
 import { generateKey } from "openpgp";
 import { dbConnect, findOneDocument, User } from 'solun-database-package';
-import { hashPassword, checkUsername, checkPassword } from 'solun-general-package';
-import { encrypt } from 'solun-server-encryption-package';
+import { hashPassword, checkUsername, checkPassword, encryptAuthPM } from 'solun-general-package';
 const { SolunApiClient } = require("../../mail/mail");
 
 export async function handleCreateUserRequest(req: Request, res: Response) {
@@ -52,7 +51,7 @@ export async function handleCreateUserRequest(req: Request, res: Response) {
       });
   
     // Encrypt private key with password
-    const encryptedPrivateKey = encrypt(privateKey, password);
+    const encryptedPrivateKey = encryptAuthPM(privateKey, password);
 
     // Create user in mailserver
     const createMail = await mcc.addMailbox({

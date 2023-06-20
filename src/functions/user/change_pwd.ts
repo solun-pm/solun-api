@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import { dbConnect, findOneDocument, updateOneDocument, User } from 'solun-database-package';
-import { comparePassword, hashPassword } from 'solun-general-package';
-import { decrypt, encrypt } from "solun-server-encryption-package";
+import { comparePassword, hashPassword, encryptAuthPM, decryptAuthPM } from 'solun-general-package';
 const { SolunApiClient } = require("../../mail/mail");
 
 
@@ -37,8 +36,8 @@ export async function handleChangePWDUserRequest(req: Request, res: Response) {
         return res.status(400).json({ message: "Password is incorrect" });
     }
 
-    const decryptedPrivateKey = decrypt(user.private_key, currentPassword) as any;
-    const encryptedPrivateKey = encrypt(decryptedPrivateKey, newPassword);
+    const decryptedPrivateKey = decryptAuthPM(user.private_key, currentPassword) as any;
+    const encryptedPrivateKey = encryptAuthPM(decryptedPrivateKey, newPassword);
 
     // Set password in mailserver
     const updateMailbox = await mcc.updateMailbox({
@@ -55,8 +54,8 @@ export async function handleChangePWDUserRequest(req: Request, res: Response) {
     }
 
     if (user.two_fa) {
-      const decryptedTwoFASecret = decrypt(user.two_fa_secret, currentPassword) as any;
-      const encryptedTwoFASecret = encrypt(decryptedTwoFASecret, newPassword);
+      const decryptedTwoFASecret = decryptAuthPM(user.two_fa_secret, currentPassword) as any;
+      const encryptedTwoFASecret = encryptAuthPM(decryptedTwoFASecret, newPassword);
 
       await updateOneDocument(
         User,

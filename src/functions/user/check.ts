@@ -28,7 +28,6 @@ export async function handleCheckUserRequest(req: Request, res: Response) {
 
     return res.status(200).json({ message: "User does not exist", exists: false });
   } catch (error) {
-    console.log(error)
     return res.status(500).json({ message: "Something went wrong" });
   }
 }
