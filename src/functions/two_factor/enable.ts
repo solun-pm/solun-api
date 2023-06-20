@@ -4,13 +4,13 @@ import { encrypt } from 'solun-server-encryption-package';
 
 export async function handleEnableTwoFactorRequest(req: Request, res: Response) {
   try {
-    const res = await req.body;
+    const requestData = req.body;
 
     await dbConnect();
 
-    let user_id = res.user_id;
-    let secret = res.secret;
-    let password = res.password;
+    let user_id = requestData.user_id;
+    let secret = requestData.secret;
+    let password = requestData.password;
 
     const user = await findOneDocument(User, { user_id: user_id });
 

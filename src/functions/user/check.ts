@@ -4,12 +4,12 @@ import { checkUsername } from 'solun-general-package';
 
 export async function handleCheckUserRequest(req: Request, res: Response) {
   try {
-    const res = req.body;
+    const requestData = req.body;
 
     await dbConnect();
 
-    let username = res.username;
-    let domain = res.domain;
+    let username = requestData.username;
+    let domain = requestData.domain;
 
     const trimmedUsername = username.trim();
 
@@ -28,6 +28,7 @@ export async function handleCheckUserRequest(req: Request, res: Response) {
 
     return res.status(200).json({ message: "User does not exist", exists: false });
   } catch (error) {
+    console.log(error)
     return res.status(500).json({ message: "Something went wrong" });
   }
 }

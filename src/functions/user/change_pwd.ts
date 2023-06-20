@@ -7,7 +7,7 @@ const { SolunApiClient } = require("../../mail/mail");
 
 export async function handleChangePWDUserRequest(req: Request, res: Response) {
   try {
-    const res = req.body;
+    const requestData = req.body;
 
     await dbConnect();
     const mcc = new SolunApiClient(
@@ -15,9 +15,9 @@ export async function handleChangePWDUserRequest(req: Request, res: Response) {
       process.env.MAILSERVER_API_KEY
     );
 
-    let user_id = res.user_id;
-    let currentPassword = res.currentPassword;
-    let newPassword = res.newPassword;
+    let user_id = requestData.user_id;
+    let currentPassword = requestData.currentPassword;
+    let newPassword = requestData.newPassword;
 
     if (currentPassword === "" || newPassword === "") {
         return res.status(400).json({ message: "Please fill out all fields" });

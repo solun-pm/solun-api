@@ -3,12 +3,12 @@ import { dbConnect, findOneDocument, updateOneDocument, User } from 'solun-datab
 
 export async function handleBetaFeaturesUserRequest(req: Request, res: Response) {
   try {
-    const res = await req.body;
+    const requestData = req.body;
 
     await dbConnect();
 
-    let user_id = res.user_id;
-    let beta_features = res.beta_features;
+    let user_id = requestData.user_id;
+    let beta_features = requestData.beta_features;
 
     const user = await findOneDocument(User, { user_id: user_id });
 

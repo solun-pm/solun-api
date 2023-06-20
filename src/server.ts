@@ -5,12 +5,18 @@ import rateLimit from 'express-rate-limit';
 var bodyParser = require('body-parser')
 import morgan from 'morgan';
 import chalk from 'chalk';
+import cors from 'cors';
 
 // Load environment variables:
 dotenv.config({ path: path.join(__dirname, '.env.local') });
 
 // Import bird handler api log function:
 import { birdApiLog, birdLog , dbConnect} from 'solun-database-package';
+async function connectDb() {
+  await dbConnect();
+}
+
+connectDb();
 
 // Multer setup for file uploads:
 import multer from 'multer';
@@ -83,6 +89,9 @@ const userLimiter = rateLimit({
   }
 });
 
+// CORS setup:
+app.use(cors());
+
 export const morganMiddleware = morgan(function (tokens, req, res) {
   birdApiLog(tokens.method(req, res) as string,
              parseInt(tokens.status(req, res) as string) as number,
@@ -107,7 +116,6 @@ export const morganMiddleware = morgan(function (tokens, req, res) {
 app.use(morganMiddleware);
 
 async function auth(req: any, res:any, next: any) {
-  await dbConnect();
   const token = req.headers['authorization'];
   if (token == process.env.SOLUN_API_KEY) {
       next();
