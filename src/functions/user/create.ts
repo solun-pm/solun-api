@@ -1,8 +1,7 @@
 import { Request, Response } from 'express';
 import { generateKey } from "openpgp";
 import { dbConnect, findOneDocument, User } from 'solun-database-package';
-import { hashPassword, checkUsername, checkPassword } from 'solun-general-package';
-import { encrypt } from 'solun-server-encryption-package';
+import { hashPassword, checkUsername, checkPassword, encryptAuthPM } from 'solun-general-package';
 const { SolunApiClient } = require("../../mail/mail");
 
 export async function handleCreateUserRequest(req: Request, res: Response) {
@@ -50,11 +49,9 @@ export async function handleCreateUserRequest(req: Request, res: Response) {
         userIDs: [{ name: username, email: fqe }],
         //passphrase: password, idk if we need this
       });
-
-    console.log(privateKey + " " + publicKey)
   
     // Encrypt private key with password
-    const encryptedPrivateKey = await encrypt(privateKey, password);
+    const encryptedPrivateKey = encryptAuthPM(privateKey, password);
 
     console.log(encryptedPrivateKey)
 
