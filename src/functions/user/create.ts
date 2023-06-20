@@ -53,8 +53,6 @@ export async function handleCreateUserRequest(req: Request, res: Response) {
     // Encrypt private key with password
     const encryptedPrivateKey = encryptAuthPM(privateKey, password);
 
-    console.log(encryptedPrivateKey)
-
     // Create user in mailserver
     const createMail = await mcc.addMailbox({
         active: 1,
