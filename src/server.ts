@@ -8,7 +8,7 @@ import chalk from 'chalk';
 import cors from 'cors';
 
 // Load environment variables:
-dotenv.config({ path: path.join(__dirname, '.env.local') });
+// dotenv.config({ path: path.join(__dirname, '.env.local') }); Irelevant for now, but will be used in development.
 
 // Import bird handler api log function:
 import { birdApiLog, birdLog , dbConnect} from 'solun-database-package';

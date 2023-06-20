@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo 'skip test'",
     "build": "tsc && npm run copy-env",
+    "live": "tsc",
     "start": "node dist/server.js",
     "copy-env": "cp .env.local dist/.env.local"
   },
