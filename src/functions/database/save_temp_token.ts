@@ -3,16 +3,16 @@ import { dbConnect, temp_token } from 'solun-database-package'
 
 export async function handleSaveTempTokenDatabaseRequest(req: Request, res: Response) {
   try {
-    const res = await req.body;
+    const requestData = await req.body;
 
     await dbConnect();
 
-    let user_id = res.user_id;
-    let fqe = res.fqe;
-    let service = res.service;
-    let tempToken = res.token;
-    let password = res.password;
-    let fast_login = res.fast_login;
+    let user_id = requestData.user_id;
+    let fqe = requestData.fqe;
+    let service = requestData.service;
+    let tempToken = requestData.token;
+    let password = requestData.password;
+    let fast_login = requestData.fast_login;
 
     const newTempToken = new temp_token({
       user_id: user_id,

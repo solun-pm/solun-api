@@ -3,11 +3,11 @@ import { dbConnect, findOneDocument, updateOneDocument, User } from 'solun-datab
 
 export async function handleDisableTwoFactorRequest(req: Request, res: Response) {
   try {
-    const res = await req.body;
+    const requestData = req.body;
 
     await dbConnect();
 
-    let user_id = res.user_id;
+    let user_id = requestData.user_id;
 
     const user = await findOneDocument(User, { user_id: user_id });
 

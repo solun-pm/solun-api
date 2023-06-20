@@ -9,14 +9,14 @@ const base32Decode = require("base32-decode");
 
 export async function handleVerifyTwoFactorRequest(req: Request, res: Response) {
   try {
-    const res = await req.body;
+    const requestData = req.body;
 
     await dbConnect();
 
-    let fqe = res.fqe;
-    let twoFACode = res.twoFACode;
-    let password = res.password;
-    let service = res.service;
+    let fqe = requestData.fqe;
+    let twoFACode = requestData.twoFACode;
+    let password = requestData.password;
+    let service = requestData.service;
 
     const user = await findOneCASEDocument(User, { fqe: fqe });
 
