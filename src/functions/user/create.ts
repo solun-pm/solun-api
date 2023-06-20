@@ -3,12 +3,13 @@ import { generateKey } from "openpgp";
 import { dbConnect, findOneDocument, User } from 'solun-database-package';
 import { hashPassword, checkUsername, checkPassword } from 'solun-general-package';
 import { encrypt } from 'solun-server-encryption-package';
-const SolunApiClient = require('solun-general-package');
+const { SolunApiClient } = require("../../mail/mail");
 
 export async function handleCreateUserRequest(req: Request, res: Response) {
   try {
 
     await dbConnect();
+  
     const mcc = new SolunApiClient(
       process.env.MAILSERVER_BASEURL,
       process.env.MAILSERVER_API_KEY

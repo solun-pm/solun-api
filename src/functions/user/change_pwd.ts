@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { dbConnect, findOneDocument, updateOneDocument, User } from 'solun-database-package';
 import { comparePassword, hashPassword } from 'solun-general-package';
 import { decrypt, encrypt } from "solun-server-encryption-package";
-const { SolunApiClient } = require("solun-general-package");
+const { SolunApiClient } = require("../../mail/mail");
 
 
 export async function handleChangePWDUserRequest(req: Request, res: Response) {

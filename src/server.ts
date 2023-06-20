@@ -10,7 +10,7 @@ import chalk from 'chalk';
 dotenv.config({ path: path.join(__dirname, '.env.local') });
 
 // Import bird handler api log function:
-import { birdApiLog } from 'solun-database-package';
+import { birdApiLog, birdLog , dbConnect} from 'solun-database-package';
 
 // Multer setup for file uploads:
 import multer from 'multer';
@@ -65,8 +65,18 @@ app.set('trust proxy', true);
 
 const limiter = rateLimit({
   windowMs: 10 * 1000, // 10 seconds
-  max: 5000, // Max 5000 requests per IP
+  max: 1000, // Max 1000 requests per IP
   message: 'Too many requests, please try again in 10 seconds',
+  keyGenerator: (req) => {
+    const clientIP = req.ip;
+    return `${clientIP}`;
+  }
+});
+
+const userLimiter = rateLimit({
+  windowMs: 30 * 1000, // 30 seconds
+  max: 10, // Max 5000 requests per IP
+  message: 'Too many requests, please try again in 30 seconds',
   keyGenerator: (req) => {
     const clientIP = req.ip;
     return `${clientIP}`;
@@ -78,7 +88,7 @@ export const morganMiddleware = morgan(function (tokens, req, res) {
              parseInt(tokens.status(req, res) as string) as number,
              tokens.url(req, res) as string,
              parseInt(tokens['response-time'](req, res) as string) as number,
-             tokens['remote-addr'](req, res) as string,
+             'we dont store this' as string,
              tokens.referrer(req, res) as string || 'none',
              tokens['user-agent'](req, res) as string
             );
@@ -89,13 +99,22 @@ export const morganMiddleware = morgan(function (tokens, req, res) {
       chalk.hex('#ff5252').bold(tokens.url(req, res)),
       chalk.hex('#2ed573').bold(tokens['response-time'](req, res) + ' ms'),
       chalk.hex('#f78fb3').bold('@ ' + tokens.date(req, res)),
-      chalk.yellow(tokens['remote-addr'](req, res)),
       chalk.hex('#fffa65').bold('from ' + tokens.referrer(req, res)),
       chalk.hex('#1e90ff')(tokens['user-agent'](req, res)),
   ].join(' ');
 });
 
 app.use(morganMiddleware);
+
+async function auth(req: any, res:any, next: any) {
+  await dbConnect();
+  const token = req.headers['authorization'];
+  if (token == process.env.SOLUN_API_KEY) {
+      next();
+  } else {
+      res.status(403).json({ error: "Request got rejected, this ressource is protected by Solun Eagle-Eye." });
+  }
+}
 
 app.get('/', (req, res) => {
   res.status(404).json({ message: "This is the Solun API server, please refer to the documentation for more information." });
@@ -112,21 +131,21 @@ app.post('/file/upload', upload.single('file'), handleUploadFileRequest);
 app.post('/file/download', limiter, jsonParser, handleDownloadFileRequest);
 app.post('/file/delete', limiter, jsonParser, handleDeleteFileRequest);
 
-app.post('/user/beta_features', limiter, jsonParser, handleBetaFeaturesUserRequest);
-app.post('/user/change_pwd', limiter, jsonParser, handleChangePWDUserRequest);
-app.post('/user/check', limiter, jsonParser, handleCheckUserRequest);
-app.post('/user/create', limiter, jsonParser, handleCreateUserRequest);
-app.post('/user/fast_login', limiter, jsonParser, handleFastLoginUserRequest);
-app.post('/user/jwt_details', limiter, jsonParser, handleJWTDetailsUserRequest);
-app.post('/user/login', limiter, jsonParser, handleLoginUserRequest);
-app.post('/user/user_details', limiter, jsonParser, handleUserDetailsUserRequest);
-app.post('/user/validate_pwd', limiter, jsonParser, handleValidatePWDUserRequest);
+app.post('/user/beta_features', limiter, auth, jsonParser, handleBetaFeaturesUserRequest);
+app.post('/user/change_pwd', limiter, auth, jsonParser, handleChangePWDUserRequest);
+app.post('/user/check', limiter, auth, jsonParser, handleCheckUserRequest);
+app.post('/user/create', userLimiter, auth, jsonParser, handleCreateUserRequest);
+app.post('/user/fast_login', limiter, auth, jsonParser, handleFastLoginUserRequest);
+app.post('/user/jwt_details', limiter, auth, jsonParser, handleJWTDetailsUserRequest);
+app.post('/user/login', limiter, auth, jsonParser, handleLoginUserRequest);
+app.post('/user/user_details', limiter, auth, jsonParser, handleUserDetailsUserRequest);
+app.post('/user/validate_pwd', limiter, auth, jsonParser, handleValidatePWDUserRequest);
 
-app.post('/database/save_temp_token', limiter, jsonParser, handleSaveTempTokenDatabaseRequest);
+app.post('/database/save_temp_token', limiter, auth, jsonParser, handleSaveTempTokenDatabaseRequest);
 
-app.post('/two_factor/verify', limiter, jsonParser, handleVerifyTwoFactorRequest);
-app.post('/two_factor/enable', limiter, jsonParser, handleEnableTwoFactorRequest);
-app.post('/two_factor/disable', limiter, jsonParser, handleDisableTwoFactorRequest);
+app.post('/two_factor/verify', limiter, auth, jsonParser, handleVerifyTwoFactorRequest);
+app.post('/two_factor/enable', limiter, auth, jsonParser, handleEnableTwoFactorRequest);
+app.post('/two_factor/disable', limiter, auth, jsonParser, handleDisableTwoFactorRequest);
 
 app.listen(3000, () => {
   console.log('Solun-API server started at port 3000');
