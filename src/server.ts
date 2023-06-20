@@ -116,7 +116,6 @@ export const morganMiddleware = morgan(function (tokens, req, res) {
 app.use(morganMiddleware);
 
 async function auth(req: any, res:any, next: any) {
-  console.log(req.headers);
   const token = req.headers['authorization'];
   if (token == process.env.SOLUN_API_KEY) {
       next();

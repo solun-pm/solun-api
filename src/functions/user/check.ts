@@ -5,7 +5,6 @@ import { checkUsername } from 'solun-general-package';
 export async function handleCheckUserRequest(req: Request, res: Response) {
   try {
     const requestData = req.body;
-    console.log("req: ", requestData);
 
     await dbConnect();
 
