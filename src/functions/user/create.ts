@@ -52,7 +52,7 @@ export async function handleCreateUserRequest(req: Request, res: Response) {
       });
   
     // Encrypt private key with password
-    const encryptedPrivateKey = encrypt(privateKey, password);
+    const encryptedPrivateKey = await encrypt(privateKey, password);
 
     // Create user in mailserver
     const createMail = await mcc.addMailbox({
