@@ -1,7 +1,8 @@
 import { dbConnect, findOneCASEDocument, User } from "solun-database-package";
 import jwt from "jsonwebtoken";
 import { decryptAuthPM } from "solun-general-package";
-import { generateTempToken, comparePassword } from "solun-general-package";
+import { comparePassword } from "solun-general-package";
+import { generateTempToken } from '../../generate/generate';
 import { Request, Response } from 'express';
 
 export async function handleLoginUserRequest(req: Request, res: Response) {
