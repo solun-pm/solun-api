@@ -158,4 +158,44 @@ module.exports.SolunApiClient = class {
       }
   }
 
+  async addAlias(alias: any) {
+    if (!alias)
+      throw new Error("Alias must be provided as an object");
+  
+    return f(`${this.baseurl}/api/v1/add/alias`, {
+      method: "POST",
+      headers: {
+        "X-Api-Key": this.apikey,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(alias),
+    })
+      .then(async (res: { json: () => Promise<any> }) => {
+        const j = await res.json().catch();
+        if (j && j[0] && j[0].type === "success") return true;
+        console.error(j);
+        return false;
+      });
+  }
+  
+  async deleteAlias(aliasIds: string[]) {
+    if (!aliasIds || !Array.isArray(aliasIds))
+      throw new Error("Alias IDs must be provided as an array of strings.");
+  
+    return f(`${this.baseurl}/api/v1/delete/alias`, {
+      method: "POST",
+      headers: {
+        "X-Api-Key": this.apikey,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(aliasIds),
+    })
+      .then(async (res: { json: () => Promise<any> }) => {
+        const j = await res.json().catch();
+        if (j && j[0] && j[0].type === "success") return true;
+        console.error(j);
+        return false;
+      });
+  }  
+
 };
