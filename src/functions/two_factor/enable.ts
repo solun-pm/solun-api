@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { dbConnect, findOneDocument, updateOneDocument, User } from 'solun-database-package';
-import { encrypt } from 'solun-server-encryption-package';
+import { encryptAuthPM } from 'solun-general-package';
 
 export async function handleEnableTwoFactorRequest(req: Request, res: Response) {
   try {
@@ -18,7 +18,7 @@ export async function handleEnableTwoFactorRequest(req: Request, res: Response) 
         return res.status(400).json({ message: 'User doest not exist or password is incorrect' });
     }
 
-    const decryptedSecret = await encrypt(secret, password);
+    const decryptedSecret = await encryptAuthPM(secret, password);
 
     await updateOneDocument(
       User,
