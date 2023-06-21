@@ -167,7 +167,7 @@ app.post('/webmail/login', limiter, auth, jsonParser, handleLoginWebmailRequest)
 app.post('/webmail/pre_auth', limiter, auth, jsonParser, handlePreAuthWebmailRequest);
 app.post('/webmail/user_details', limiter, auth, jsonParser, handleUserDetailsWebmailRequest);
 
-app.post('/stats/api_log', limiter, auth, jsonParser, handleApiLogStatsRequest);
+app.get('/stats/api_log', limiter, auth, jsonParser, handleApiLogStatsRequest);
 
 app.listen(3000, () => {
   console.log('Solun-API server started at port 3000');
