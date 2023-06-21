@@ -46,7 +46,7 @@ export async function handleLoginWebmailRequest(req: Request, res: Response) {
       app_name: app_name,
       app_passwd: appPwd,
       app_passwd2: appPwd,
-      protocolos: [
+      protocols: [
         'imap_access',
         'smtp_access',
         'pop3_access'
