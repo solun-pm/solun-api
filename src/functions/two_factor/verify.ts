@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { dbConnect, findOneCASEDocument, User } from 'solun-database-package';
-import { generateTempToken, comparePassword, decryptAuthPM } from 'solun-general-package';
+import {comparePassword, decryptAuthPM } from 'solun-general-package';
+import { generateTempToken } from '../../generate/generate';
 import jwt from "jsonwebtoken";
 import { totp } from "otplib";
 import { KeyEncodings } from "otplib/core";
