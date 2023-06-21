@@ -63,6 +63,11 @@ import { handleVerifyTwoFactorRequest } from './functions/two_factor/verify';
 import { handleEnableTwoFactorRequest } from './functions/two_factor/enable';
 import { handleDisableTwoFactorRequest } from './functions/two_factor/disable';
 
+import { handleJWTDetailsWebmailRequest } from './functions/webmail/jwt_details';
+import { handleLoginWebmailRequest } from './functions/webmail/login';
+import { handlePreAuthWebmailRequest } from './functions/webmail/pre_auth';
+import { handleUserDetailsWebmailRequest } from './functions/webmail/user_details';
+
 //: Express and Body Parser setup
 const app = express();
 const jsonParser = bodyParser.json()
@@ -154,6 +159,11 @@ app.post('/database/save_temp_token', limiter, auth, jsonParser, handleSaveTempT
 app.post('/two_factor/verify', limiter, auth, jsonParser, handleVerifyTwoFactorRequest);
 app.post('/two_factor/enable', limiter, auth, jsonParser, handleEnableTwoFactorRequest);
 app.post('/two_factor/disable', limiter, auth, jsonParser, handleDisableTwoFactorRequest);
+
+app.post('/webmail/jwt_details', limiter, auth, jsonParser, handleJWTDetailsWebmailRequest);
+app.post('/webmail/login', limiter, auth, jsonParser, handleLoginWebmailRequest);
+app.post('/webmail/pre_auth', limiter, auth, jsonParser, handlePreAuthWebmailRequest);
+app.post('/webmail/user_details', limiter, auth, jsonParser, handleUserDetailsWebmailRequest);
 
 app.listen(3000, () => {
   console.log('Solun-API server started at port 3000');
