@@ -17,10 +17,6 @@ export async function handleUploadFileRequest(req: Request, res: Response) {
         let endToEndEncryption = formData.endToEndEncryption === "true";    
         let autoDeletion = formData.autoDeletion;
 
-        if (password !== '') {
-            password = await decryptTransfer(password);
-        }
-
         if (!file) {
             return res.status(400).json({ message: "Please upload a file" });
         }
@@ -32,9 +28,6 @@ export async function handleUploadFileRequest(req: Request, res: Response) {
 
         const fid = await generateID(bruteforceSafe);
         const secret_key = await generateAES();
-                
-        const passwordSet = password !== "";
-        const encrypted_password = passwordSet ? await hashPassword(password) : null;
         
         const dbSecretKey = endToEndEncryption ? null : secret_key;
         
@@ -54,7 +47,7 @@ export async function handleUploadFileRequest(req: Request, res: Response) {
             file_size: file.size,
             auto_delete: autoDeletion,
             secret: dbSecretKey,
-            password: encrypted_password,
+            password: password,
             iv: iv.toString('hex'),
         });
 
