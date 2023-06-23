@@ -23,9 +23,6 @@ export async function handleCreateMessageRequest(req: Request, res: Response) {
         await insertMessage.save();
 
         let link = process.env.NEXT_PUBLIC_MAIN_DOMAIN + "/msg/" + message_id + "/";
-        if (dbSecretKey !== null) {
-            link += dbSecretKey + "/";
-        }
 
         return res.status(200).json({ message: "Message created successfully", message_id: message_id, link: link });
     } catch (err) {

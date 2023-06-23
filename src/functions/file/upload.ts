@@ -36,7 +36,11 @@ export async function handleUploadFileRequest(req: Request, res: Response) {
         const dbFilename = file.originalname;
         
         const iv = await generateIV();
-        await encryptFile(filePath, secret_key as string, iv as Buffer);    
+        await encryptFile(filePath, secret_key as string, iv as Buffer);
+
+        if(password === "null") {
+            password = null;
+        }
 
         const insertFile = new File({
             file_id: fid,
