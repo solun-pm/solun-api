@@ -37,7 +37,9 @@ export async function handleUploadFileRequest(req: Request, res: Response) {
         
         const iv = await generateIV();
         await encryptFile(filePath, secret_key as string, iv as Buffer);
-        
+
+        console.log(password);
+
         const insertFile = new File({
             file_id: fid,
             file_path: filePath, // Deprecated as far as I know
