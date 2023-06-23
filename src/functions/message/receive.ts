@@ -11,6 +11,10 @@ export async function handleReceiveMessageRequest(req: Request, res: Response) {
     let password = requestData.password;
     let secret_key = requestData.secret || null;
 
+    console.log('id: ' + id)
+    console.log('password:'+ password)
+    console.log('secret_key: ' + secret_key)
+
     if (!id) {
         return res.status(400).json({ message: "No message ID provided." });
     }
@@ -19,6 +23,7 @@ export async function handleReceiveMessageRequest(req: Request, res: Response) {
 
     if (message) {
       secret_key = secret_key || message.secret;
+      console.log('secret_key: ' + secret_key)
 
       if (message.password) {
         if (!password) {
@@ -29,6 +34,8 @@ export async function handleReceiveMessageRequest(req: Request, res: Response) {
           }
         }
       }
+
+      console.log('secret_key: ' + secret_key)
 
       return res.status(200).json({ valid: true, secret: secret_key });
     } else {
