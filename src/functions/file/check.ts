@@ -16,7 +16,6 @@ export async function handleCheckFileRequest(req: Request, res: Response) {
         const file = await findOneDocument(File, { file_id: id });
 
         if (file) {
-            console.log(file.password)
             if (file.password === null) {
                 return res.status(200).json({ valid: true, password: false });
             } else {
