@@ -37,7 +37,7 @@ export async function handleReceiveMessageRequest(req: Request, res: Response) {
 
       console.log('secret_key: ' + secret_key)
 
-      return res.status(200).json({ valid: true, secret: secret_key });
+      return res.status(200).json({ valid: true, message: message.message, secret: secret_key });
     } else {
         return res.status(404).json({ valid: false, message: "No message found with this ID" });
     }
