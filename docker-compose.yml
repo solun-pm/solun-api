@@ -6,6 +6,8 @@ services:
     ports:
       - 3000:3000
     environment:
+      - NEXT_PUBLIC_SITE_KEY=
+      - CAPTCHA_KEY=
       - FILE_DESTINATION_PATH=
       - MONGODB_URL=
       - JWT_SECRET_KEY=

@@ -19,6 +19,7 @@ export async function handleCreateUserRequest(req: Request, res: Response) {
     let fqe = `${username}${domain}`;
     let password = req.body.password;
     let confirmPassword = req.body.confirmPassword;
+    let solution = req.body.solution;
 
     if (!username || !domain || !password || !confirmPassword) {
         return res.status(400).json({ message: "Please fill in all fields" });
@@ -39,6 +40,22 @@ export async function handleCreateUserRequest(req: Request, res: Response) {
     if (user) {
         return res.status(400).json({ message: "User already exists" });
     }
+
+    const solutionCheck = await fetch('https://api.friendlycaptcha.com/api/v1/siteverify',{
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          solution: solution,
+          secret: process.env.CAPTCHA_KEY,
+          sitekey: process.env.NEXT_PUBLIC_SITE_KEY,
+        }),
+    });
+    if (!solutionCheck.ok) {
+        return res.status(400).json({ message: "Captcha failed" });
+    }
+
 
     const passwordHashed = await hashPassword(password);
 
