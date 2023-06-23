@@ -1,4 +1,4 @@
-import { comparePassword, decrypt } from 'solun-general-package';
+import { comparePassword } from 'solun-general-package';
 import { dbConnect, findOneDocument, Message, birdLog } from 'solun-database-package';
 import { Request, Response } from "express";
 
