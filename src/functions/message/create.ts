@@ -13,6 +13,11 @@ export async function handleCreateMessageRequest(req: Request, res: Response) {
         let dbSecretKey = requestData.dbSecretKey;
         let encrypted_password = requestData.encrypted_password;
 
+        console.log(message_id)
+        console.log(encrypted_message)
+        console.log(dbSecretKey)
+        console.log(encrypted_password)
+
         const insertMessage = new Message({
           message_id: message_id,
           message: encrypted_message,
@@ -26,6 +31,8 @@ export async function handleCreateMessageRequest(req: Request, res: Response) {
         if (dbSecretKey !== null) {
             link += dbSecretKey + "/";
         }
+
+        console.log(link)
 
         return res.status(200).json({ message: "Message created successfully", message_id: message_id, link: link });
     } catch (err) {
