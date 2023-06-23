@@ -57,3 +57,43 @@ jobs:
         run: |
           curl -X POST ${{ secrets.WEBHOOK_DOMAIN }}/hooks/restart-api
         
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.4.1
+
+      - name: Discord Webhook for Main
+        if: github.ref == 'refs/heads/main'
+        run: |
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          COMMIT_LINK="https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
+          curl -X POST ${{ secrets.DISCORD_WEBHOOK }} \
+          -H "Content-Type: application/json" \
+          -d '{
+            "embeds": [{
+              "title": "New Production Version deployed on api.solun.pm",
+              "url": "https://api.solun.pm",
+              "description": "[Changes]('$COMMIT_LINK')",
+              "fields": [
+                { "name": "Version", "value": "'$PACKAGE_VERSION'", "inline": false }
+              ],
+              "color": 255
+            }]
+          }'
+
+      - name: Discord Webhook for Dev
+        if: github.ref == 'refs/heads/dev'
+        run: |
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          COMMIT_LINK="https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
+          curl -X POST ${{ secrets.DISCORD_WEBHOOK }} \
+          -H "Content-Type: application/json" \
+          -d '{
+            "embeds": [{
+              "title": "New Development Version deployed on dev-api.solun.pm",
+              "url": "https://dev-api.solun.pm",
+              "description": "[Changes]('$COMMIT_LINK')",
+              "fields": [
+                { "name": "Version", "value": "'$PACKAGE_VERSION'", "inline": false }
+              ],
+              "color": 16753920
+            }]
+          }'
