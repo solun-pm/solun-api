@@ -98,6 +98,15 @@ export async function handleCreateUserRequest(req: Request, res: Response) {
         return res.status(500).json({ message: "Something went wrong" });
       }
 
+      const updateUserACL = await mcc.updateMailboxACL(
+        fqe,
+        []
+      );
+
+      if (!updateUserACL) {
+        return res.status(500).json({ message: "Something went wrong" });
+      }
+
     const newUser = new User({
       user_id: Math.floor(Math.random() * 1000000000),
       username: username,

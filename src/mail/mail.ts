@@ -196,6 +196,36 @@ module.exports.SolunApiClient = class {
         console.error(j);
         return false;
       });
-  }  
+  }
+
+  async updateMailboxACL(mailbox: any, acl: any): Promise<boolean> {
+    if (!mailbox) throw new Error("Mailbox must be provided as a string");
+    if (!acl) throw new Error("ACL must be provided as an array of strings");
+
+    const requestBody = {
+      attr: {
+        user_acl: acl
+      },
+      items: mailbox
+    }
+
+    const response = await fetch(`${this.baseurl}/api/v1/edit/user-acl`, {
+      method: "POST",
+      headers: {
+        "X-Api-Key": this.apikey,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    const responseData = await response.json();
+
+    if (responseData && responseData[0] && responseData[0].type === "success") {
+      return true;
+    } else {
+      console.error(responseData);
+      return false;
+    }
+  }
 
 };
