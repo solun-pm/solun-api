@@ -131,6 +131,17 @@ async function auth(req: any, res:any, next: any) {
   }
 }
 
+const timeout = (req: any, res: any, next: any) => {
+  const twentyFourHours = 24 * 60 * 60 * 1000;
+
+  req.setTimeout(twentyFourHours, () => {
+    res.status(408).json({ message: "Request timed out, please try again." });
+  });
+
+  next();
+};
+
+
 app.get('/', (req, res) => {
   res.status(404).json({ message: "This is the Solun API server, please refer to the documentation for more information." });
 });
@@ -142,8 +153,8 @@ app.post('/message/receive', limiter, jsonParser, handleReceiveMessageRequest);
 
 app.post('/file/check', limiter, jsonParser, handleCheckFileRequest);
 app.post('/file/receive', limiter, jsonParser, handleReceiveFileRequest);
-app.post('/file/upload', upload.single('file'), handleUploadFileRequest);
-app.post('/file/download', limiter, jsonParser, handleDownloadFileRequest);
+app.post('/file/upload', timeout, upload.single('file'), handleUploadFileRequest);
+app.post('/file/download', timeout, limiter, jsonParser, handleDownloadFileRequest);
 app.post('/file/delete', limiter, jsonParser, handleDeleteFileRequest);
 
 app.post('/user/beta_features', limiter, auth, jsonParser, handleBetaFeaturesUserRequest);
