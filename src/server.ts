@@ -180,6 +180,8 @@ app.post('/webmail/user_details', limiter, auth, jsonParser, handleUserDetailsWe
 
 app.get('/stats/api_log', limiter, auth, jsonParser, handleApiLogStatsRequest);
 
-app.listen(3000, () => {
+const server = app.listen(3000, () => {
   console.log('Solun-API server started at port 3000');
 });
+
+server.timeout = 24 * 60 * 60 * 1000; // 24 hours
