@@ -100,13 +100,13 @@ const userLimiter = rateLimit({
 app.use(cors());
 
 export const morganMiddleware = morgan(function (tokens, req, res) {
-  birdApiLog(tokens.method(req, res) as string,
-             parseInt(tokens.status(req, res) as string) as number,
-             tokens.url(req, res) as string,
-             parseInt(tokens['response-time'](req, res) as string) as number,
-             'we dont store this' as string,
+  birdApiLog(tokens.method(req, res) as string || 'none',
+             parseInt(tokens.status(req, res) as string) as number || 0,
+             tokens.url(req, res) as string || 'none',
+             parseInt(tokens['response-time'](req, res) as string) as number || 0,
+             'none' as string,
              tokens.referrer(req, res) as string || 'none',
-             tokens['user-agent'](req, res) as string
+             tokens['user-agent'](req, res) as string || 'none'
             );
   return [
       chalk.hex('#ff4757').bold('🕊️  SOLUN-API --> '),
