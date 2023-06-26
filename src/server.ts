@@ -134,7 +134,7 @@ async function auth(req: any, res:any, next: any) {
 const timeout = (req: any, res: any, next: any) => {
   const twentyFourHours = 24 * 60 * 60 * 1000;
 
-  req.setTimeout(twentyFourHours, () => {
+  req.socket.setTimeout(twentyFourHours, () => {
     res.status(408).json({ message: "Request timed out, please try again." });
   });
 
