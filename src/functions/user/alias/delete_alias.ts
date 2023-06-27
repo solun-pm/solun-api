@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { dbConnect, findOneDocument, deleteOneDocument, User, User_Aliases } from 'solun-database-package';
-const { SolunApiClient } = require("../../mail/mail");
+const { SolunApiClient } = require("../../../mail/mail");
 
 export async function handleDeleteAliasRequest(req: Request, res: Response) {
   try {

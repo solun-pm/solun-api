@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { dbConnect, findOneDocument, User, User_Aliases } from 'solun-database-package';
-const { SolunApiClient } = require("../../mail/mail");
+const { SolunApiClient } = require("../../../mail/mail");
 
 export async function handleCreateAliasRequest(req: Request, res: Response) {
   try {
