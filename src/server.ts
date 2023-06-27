@@ -124,7 +124,7 @@ app.use(morganMiddleware);
 
 async function auth(req: any, res:any, next: any) {
   const token = req.headers['authorization'];
-  if (token == process.env.SOLUN_API_KEY) {
+  if (token === process.env.SOLUN_API_KEY) {
       next();
   } else {
       res.status(403).json({ error: "Request got rejected, this ressource is protected by Solun Eagle-Eye." });
