@@ -26,7 +26,7 @@ import { extname } from "path";
 const storage = multer.diskStorage({
     destination: process.env.FILE_DESTINATION_PATH,
     filename: function (req, file, cb) {
-        req.setTimeout(60 * 1000); // 60 seconds
+        req.setTimeout(24 * 60 * 60 * 1000); // 24 hours
         const uniqueSuffix = `${crypto.randomBytes(64).toString('hex')}`;
         const extension = extname(file.originalname).slice(1);
         const systemFilename = `${uniqueSuffix}.${extension}`;
@@ -134,15 +134,14 @@ async function auth(req: any, res:any, next: any) {
 
 const timeout = (req: any, res: any, next: any) => {
   const twentyFourHours = 24 * 60 * 60 * 1000;
-  const tenSeconds = 10 * 1000;
 
-  req.setTimeout(tenSeconds, () => {
+  req.setTimeout(twentyFourHours, () => {
     if (!res.headersSent) {
       res.status(408).json({ message: "Request timed out, please try again." });
     }
   });
 
-  res.setTimeout(tenSeconds, () => {
+  res.setTimeout(twentyFourHours, () => {
     if (!res.headersSent) {
       res.status(408).json({ message: "Request timed out, please try again." });
     }
@@ -194,4 +193,4 @@ const server = app.listen(3000, () => {
   console.log('Solun-API server started at port 3000');
 });
 
-server.timeout = 60 * 1000; // 60 seconds
+server.timeout = 24 * 60 * 60 * 1000; // 24 hours
