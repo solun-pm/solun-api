@@ -8,7 +8,7 @@ import chalk from 'chalk';
 import cors from 'cors';
 
 // Load environment variables:
-// dotenv.config({ path: path.join(__dirname, '.env.local') }); Irelevant for now, but will be used in development.
+// dotenv.config({ path: path.join(__dirname, '.env.local') }); // Irelevant for now, but will be used in development.
 
 // Import bird handler api log function:
 import { birdApiLog, birdLog , dbConnect} from 'solun-database-package';
@@ -26,7 +26,6 @@ import { extname } from "path";
 const storage = multer.diskStorage({
     destination: process.env.FILE_DESTINATION_PATH,
     filename: function (req, file, cb) {
-        req.setTimeout(24 * 60 * 60 * 1000); // 24 hours
         const uniqueSuffix = `${crypto.randomBytes(64).toString('hex')}`;
         const extension = extname(file.originalname).slice(1);
         const systemFilename = `${uniqueSuffix}.${extension}`;
@@ -135,13 +134,13 @@ async function auth(req: any, res:any, next: any) {
 const timeout = (req: any, res: any, next: any) => {
   const twentyFourHours = 24 * 60 * 60 * 1000;
 
-  req.setTimeout(twentyFourHours, () => {
+  req.socket.setTimeout(twentyFourHours, () => {
     if (!res.headersSent) {
       res.status(408).json({ message: "Request timed out, please try again." });
     }
   });
 
-  res.setTimeout(twentyFourHours, () => {
+  res.socket.setTimeout(twentyFourHours, () => {
     if (!res.headersSent) {
       res.status(408).json({ message: "Request timed out, please try again." });
     }
@@ -149,7 +148,7 @@ const timeout = (req: any, res: any, next: any) => {
 
   next();
 };
-
+ 
 
 app.get('/', (req, res) => {
   res.status(404).json({ message: "This is the Solun API server, please refer to the documentation for more information." });
