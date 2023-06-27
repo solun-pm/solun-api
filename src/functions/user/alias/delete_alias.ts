@@ -28,7 +28,7 @@ export async function handleDeleteAliasRequest(req: Request, res: Response) {
     }
 
     // Delete alias on mailserver
-    const deleteAlias = await mcc.deleteAlias(fqa);
+    const deleteAlias = await mcc.deleteAlias([fqa]);
 
     if (!deleteAlias) {
       return res.status(500).json({ message: "Something went wrong" });
