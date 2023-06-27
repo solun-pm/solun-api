@@ -56,6 +56,7 @@ import { handleJWTDetailsUserRequest } from './functions/user/jwt_details';
 import { handleLoginUserRequest } from './functions/user/login';
 import { handleUserDetailsUserRequest } from './functions/user/user_details';
 import { handleValidatePWDUserRequest } from './functions/user/validate_pwd';
+import { handleGetDomainsUserRequest } from './functions/user/get_domains';
 
 import { handleSaveTempTokenDatabaseRequest } from './functions/database/save_temp_token';
 
@@ -174,6 +175,7 @@ app.post('/user/jwt_details', limiter, auth, jsonParser, handleJWTDetailsUserReq
 app.post('/user/login', limiter, auth, jsonParser, handleLoginUserRequest);
 app.post('/user/user_details', limiter, auth, jsonParser, handleUserDetailsUserRequest);
 app.post('/user/validate_pwd', limiter, auth, jsonParser, handleValidatePWDUserRequest);
+app.post('/user/get_domains', limiter, auth, jsonParser, handleGetDomainsUserRequest);
 
 app.post('/database/save_temp_token', limiter, auth, jsonParser, handleSaveTempTokenDatabaseRequest);
 
