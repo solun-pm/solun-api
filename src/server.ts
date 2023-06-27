@@ -142,6 +142,12 @@ const timeout = (req: any, res: any, next: any) => {
     }
   });
 
+  res.setTimeout(tenSeconds, () => {
+    if (!res.headersSent) {
+      res.status(408).json({ message: "Request timed out, please try again." });
+    }
+  });
+
   next();
 };
 
