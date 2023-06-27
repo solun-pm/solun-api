@@ -198,6 +198,27 @@ module.exports.SolunApiClient = class {
       });
   }
 
+  async getAlias(id: string): Promise<any> {
+    const endpoint = `${this.baseurl}/api/v1/get/alias/${id}`;
+  
+    const response = await fetch(endpoint, {
+      method: "GET",
+      headers: {
+        "X-Api-Key": this.apikey,
+        "Content-Type": "application/json",
+      },
+    });
+  
+    const responseData = await response.json();
+  
+    if (responseData && response.status === 200) {
+      return responseData;
+    } else {
+      console.error(responseData);
+      throw new Error(responseData.msg);
+    }
+  };  
+
   async updateMailboxACL(mailbox: any, acl: any): Promise<boolean> {
     if (!mailbox) throw new Error("Mailbox must be provided as a string");
     if (!acl) throw new Error("ACL must be provided as an array of strings");
@@ -227,5 +248,108 @@ module.exports.SolunApiClient = class {
       return false;
     }
   }
+
+  async getDomain(domain: string, tags?: string): Promise<any> {
+    const endpoint = domain ? `${this.baseurl}/api/v1/get/domain/${domain}` : `${this.baseurl}/api/v1/get/domain/all`;
+  
+    let params: { [key: string]: string } = {};
+  
+    if(tags) {
+      params['tags'] = tags;
+    }
+  
+    const url = new URL(endpoint);
+    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+  
+    const response = await fetch(url.toString(), {
+      method: "GET",
+      headers: {
+        "X-Api-Key": this.apikey,
+        "Content-Type": "application/json",
+      },
+    });
+  
+    const responseData = await response.json();
+  
+    if (responseData && response.status === 200) {
+      return responseData;
+    } else {
+      console.error(responseData);
+      throw new Error(responseData.msg);
+    }
+  };
+
+  async getMailbox(mail: string, tags?: string): Promise<any> {
+    const endpoint = mail ? `${this.baseurl}/api/v1/get/mailbox/${mail}` : `${this.baseurl}/api/v1/get/mailbox/all`;
+  
+    let params: { [key: string]: string } = {};
+  
+    if(tags) {
+      params['tags'] = tags;
+    }
+  
+    const url = new URL(endpoint);
+    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+  
+    const response = await fetch(url.toString(), {
+      method: "GET",
+      headers: {
+        "X-Api-Key": this.apikey,
+        "Content-Type": "application/json",
+      },
+    });
+  
+    const responseData = await response.json();
+  
+    if (responseData && response.status === 200) {
+      return responseData;
+    } else {
+      console.error(responseData);
+      throw new Error(responseData.msg);
+    }
+  };
+
+
+  async getMailboxesForDomain(domain: string): Promise<any> {
+    const endpoint = `${this.baseurl}/api/v1/get/mailbox/all/${domain}`;
+  
+    const response = await fetch(endpoint, {
+      method: "GET",
+      headers: {
+        "X-Api-Key": this.apikey,
+        "Content-Type": "application/json",
+      },
+    });
+  
+    const responseData = await response.json();
+  
+    if (responseData && response.status === 200) {
+      return responseData;
+    } else {
+      console.error(responseData);
+      throw new Error(responseData.msg);
+    }
+  };
+  
+  async getDKIMForDomain(domain: string): Promise<any> {
+    const endpoint = `${this.baseurl}/api/v1/get/dkim/${domain}`;
+  
+    const response = await fetch(endpoint, {
+      method: "GET",
+      headers: {
+        "X-Api-Key": this.apikey,
+        "Content-Type": "application/json",
+      },
+    });
+  
+    const responseData = await response.json();
+  
+    if (responseData && response.status === 200) {
+      return responseData;
+    } else {
+      console.error(responseData);
+      throw new Error(responseData.msg);
+    }
+  }; 
 
 };
