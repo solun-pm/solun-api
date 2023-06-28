@@ -8,7 +8,7 @@ import chalk from 'chalk';
 import cors from 'cors';
 
 // Load environment variables:
-// dotenv.config({ path: path.join(__dirname, '.env.local') }); Irelevant for now, but will be used in development.
+// dotenv.config({ path: path.join(__dirname, '.env.local') }); // Irelevant for now, but will be used in development.
 
 // Import bird handler api log function:
 import { birdApiLog, birdLog , dbConnect} from 'solun-database-package';
@@ -56,6 +56,11 @@ import { handleJWTDetailsUserRequest } from './functions/user/jwt_details';
 import { handleLoginUserRequest } from './functions/user/login';
 import { handleUserDetailsUserRequest } from './functions/user/user_details';
 import { handleValidatePWDUserRequest } from './functions/user/validate_pwd';
+import { handleGetDomainsUserRequest } from './functions/user/get_domains';
+
+import { handleCreateAliasRequest } from './functions/user/alias/add_alias';
+import { handleGetAliasRequest } from './functions/user/alias/get_alias';
+import { handleDeleteAliasRequest } from './functions/user/alias/delete_alias';
 
 import { handleSaveTempTokenDatabaseRequest } from './functions/database/save_temp_token';
 
@@ -100,13 +105,13 @@ const userLimiter = rateLimit({
 app.use(cors());
 
 export const morganMiddleware = morgan(function (tokens, req, res) {
-  birdApiLog(tokens.method(req, res) as string,
-             parseInt(tokens.status(req, res) as string) as number,
-             tokens.url(req, res) as string,
-             parseInt(tokens['response-time'](req, res) as string) as number,
-             'we dont store this' as string,
+  birdApiLog(tokens.method(req, res) as string || 'none',
+             parseInt(tokens.status(req, res) as string) as number || 0,
+             tokens.url(req, res) as string || 'none',
+             parseInt(tokens['response-time'](req, res) as string) as number || 0,
+             'none' as string,
              tokens.referrer(req, res) as string || 'none',
-             tokens['user-agent'](req, res) as string
+             tokens['user-agent'](req, res) as string || 'none'
             );
   return [
       chalk.hex('#ff4757').bold('🕊️  SOLUN-API --> '),
@@ -124,12 +129,31 @@ app.use(morganMiddleware);
 
 async function auth(req: any, res:any, next: any) {
   const token = req.headers['authorization'];
-  if (token == process.env.SOLUN_API_KEY) {
+  if (token === process.env.SOLUN_API_KEY) {
       next();
   } else {
       res.status(403).json({ error: "Request got rejected, this ressource is protected by Solun Eagle-Eye." });
   }
 }
+
+const timeout = (req: any, res: any, next: any) => {
+  const twentyFourHours = 24 * 60 * 60 * 1000;
+
+  req.socket.setTimeout(twentyFourHours, () => {
+    if (!res.headersSent) {
+      res.status(408).json({ message: "Request timed out, please try again." });
+    }
+  });
+
+  res.socket.setTimeout(twentyFourHours, () => {
+    if (!res.headersSent) {
+      res.status(408).json({ message: "Request timed out, please try again." });
+    }
+  });
+
+  next();
+};
+ 
 
 app.get('/', (req, res) => {
   res.status(404).json({ message: "This is the Solun API server, please refer to the documentation for more information." });
@@ -142,8 +166,8 @@ app.post('/message/receive', limiter, jsonParser, handleReceiveMessageRequest);
 
 app.post('/file/check', limiter, jsonParser, handleCheckFileRequest);
 app.post('/file/receive', limiter, jsonParser, handleReceiveFileRequest);
-app.post('/file/upload', upload.single('file'), handleUploadFileRequest);
-app.post('/file/download', limiter, jsonParser, handleDownloadFileRequest);
+app.post('/file/upload', timeout, upload.single('file'), handleUploadFileRequest);
+app.post('/file/download', timeout, limiter, jsonParser, handleDownloadFileRequest);
 app.post('/file/delete', limiter, jsonParser, handleDeleteFileRequest);
 
 app.post('/user/beta_features', limiter, auth, jsonParser, handleBetaFeaturesUserRequest);
@@ -155,6 +179,10 @@ app.post('/user/jwt_details', limiter, auth, jsonParser, handleJWTDetailsUserReq
 app.post('/user/login', limiter, auth, jsonParser, handleLoginUserRequest);
 app.post('/user/user_details', limiter, auth, jsonParser, handleUserDetailsUserRequest);
 app.post('/user/validate_pwd', limiter, auth, jsonParser, handleValidatePWDUserRequest);
+app.post('/user/get_domains', limiter, auth, jsonParser, handleGetDomainsUserRequest);
+app.post('/user/add_alias', userLimiter, auth, jsonParser, handleCreateAliasRequest);
+app.post('/user/get_alias', limiter, auth, jsonParser, handleGetAliasRequest);
+app.post('/user/delete_alias', userLimiter, auth, jsonParser, handleDeleteAliasRequest);
 
 app.post('/database/save_temp_token', limiter, auth, jsonParser, handleSaveTempTokenDatabaseRequest);
 
@@ -169,6 +197,8 @@ app.post('/webmail/user_details', limiter, auth, jsonParser, handleUserDetailsWe
 
 app.get('/stats/api_log', limiter, auth, jsonParser, handleApiLogStatsRequest);
 
-app.listen(3000, () => {
+const server = app.listen(3000, () => {
   console.log('Solun-API server started at port 3000');
 });
+
+server.setTimeout(24 * 60 * 60 * 1000); // 24 hours

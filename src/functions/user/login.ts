@@ -23,20 +23,12 @@ export async function handleLoginUserRequest(req: Request, res: Response) {
       return res.status(400).json({ message: "User does not exist or password is incorrect" });
     }
 
-    const decryptedPrivateKey = decryptAuthPM(user.private_key, password) as any;
-
-    if (decryptedPrivateKey == "") {
-      return res.status(400).json({ message: "User does not exist or password is incorrect" });
-    }
-
     const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
     const token = jwt.sign(
       {
         fqe: user.fqe,
         username: user.username,
-        user_id: user.user_id,
-        private_key: decryptedPrivateKey,
-        password: password,
+        user_id: user.user_id
       },
       // @ts-ignore
       JWT_SECRET_KEY,
