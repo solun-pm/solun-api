@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { dbConnect, findOneCASEDocument, User, User_Aliases } from 'solun-database-package';
+import { dbConnect, findOneDocument, findOneCASEDocument, User, User_Aliases } from 'solun-database-package';
 const { SolunApiClient } = require("../../../mail/mail");
 
 export async function handleCreateAliasRequest(req: Request, res: Response) {
@@ -22,7 +22,7 @@ export async function handleCreateAliasRequest(req: Request, res: Response) {
         return res.status(400).json({ message: "Please fill in all fields" });
     }
 
-    const user = await findOneCASEDocument(User, { user_id: user_id });
+    const user = await findOneDocument(User, { user_id: user_id });
 
     if (!user) {
         return res.status(400).json({ message: "User does not exist" });
