@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { dbConnect, findOneDocument, User } from 'solun-database-package';
 
-export async function handleGetDomainsUserRequest(req: Request, res: Response) {
+export async function handleGetDomainsRequest(req: Request, res: Response) {
   try {
     await dbConnect();
 
@@ -13,8 +13,8 @@ export async function handleGetDomainsUserRequest(req: Request, res: Response) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // @todo: get domains from database and return them
-    const domains = ['@solun.pm'];
+    // @todo: get USER ADDED domains from database and return them with the default ones.
+    const domains = ['@solun.pm', '@6crypt.com', '@seal.pm', '@xolus.de', '@cipher.pm'];
 
     return res.status(200).json(domains);
   } catch (error) {
