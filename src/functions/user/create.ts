@@ -20,7 +20,6 @@ export async function handleCreateUserRequest(req: Request, res: Response) {
     let password = req.body.password;
     let confirmPassword = req.body.confirmPassword;
     let solution = req.body.solution;
-    let recovery_key = req.body.recoveryCode;
 
     if (!username || !domain || !password || !confirmPassword) {
         return res.status(400).json({ message: "Please fill in all fields" });
@@ -116,7 +115,6 @@ export async function handleCreateUserRequest(req: Request, res: Response) {
       password: passwordHashed,
       private_key: encryptedPrivateKey,
       public_key: publicKey,
-      recovery_key: recovery_key,
     });
 
     await newUser.save();
