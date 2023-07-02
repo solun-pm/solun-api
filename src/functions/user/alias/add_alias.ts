@@ -57,6 +57,7 @@ export async function handleCreateAliasRequest(req: Request, res: Response) {
         alias_name: aliasName,
         domain: domain,
         goto: goto,
+        active: true,
     });
 
     await newAlias.save();
