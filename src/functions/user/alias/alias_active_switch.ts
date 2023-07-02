@@ -15,7 +15,7 @@ export async function handleSwitchStateAliasRequest(req: Request, res: Response)
       let fqa = req.body.fqa;
       let alias_state = req.body.alias_state;
 
-    if (!user_id || !fqa || !alias_state) {
+    if (!user_id || !fqa) {
         return res.status(400).json({ message: "Please fill in all fields" });
     }
 
