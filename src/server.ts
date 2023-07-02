@@ -56,11 +56,15 @@ import { handleJWTDetailsUserRequest } from './functions/user/jwt_details';
 import { handleLoginUserRequest } from './functions/user/login';
 import { handleUserDetailsUserRequest } from './functions/user/user_details';
 import { handleValidatePWDUserRequest } from './functions/user/validate_pwd';
-import { handleGetDomainsUserRequest } from './functions/user/get_domains';
+import { handleRecoveryUserRequest } from './functions/user/recovery';
+
+import { handleCheckRecoveryCodeRequest } from './functions/user/forgot/check_recovery_code';
+import { handleResetPasswordRequest } from './functions/user/forgot/reset_password';
 
 import { handleCreateAliasRequest } from './functions/user/alias/add_alias';
 import { handleGetAliasRequest } from './functions/user/alias/get_alias';
 import { handleDeleteAliasRequest } from './functions/user/alias/delete_alias';
+import { handleGetDomainsRequest } from './functions/user/alias/get_domains';
 
 import { handleSaveTempTokenDatabaseRequest } from './functions/database/save_temp_token';
 
@@ -179,10 +183,15 @@ app.post('/user/jwt_details', limiter, auth, jsonParser, handleJWTDetailsUserReq
 app.post('/user/login', limiter, auth, jsonParser, handleLoginUserRequest);
 app.post('/user/user_details', limiter, auth, jsonParser, handleUserDetailsUserRequest);
 app.post('/user/validate_pwd', limiter, auth, jsonParser, handleValidatePWDUserRequest);
-app.post('/user/get_domains', limiter, auth, jsonParser, handleGetDomainsUserRequest);
+app.post('/user/recovery', limiter, auth, jsonParser, handleRecoveryUserRequest);
+
+app.post('/user/check_recovery_code', limiter, auth, jsonParser, handleCheckRecoveryCodeRequest);
+app.post('/user/reset_password', limiter, auth, jsonParser, handleResetPasswordRequest);
+
 app.post('/user/add_alias', userLimiter, auth, jsonParser, handleCreateAliasRequest);
 app.post('/user/get_alias', limiter, auth, jsonParser, handleGetAliasRequest);
 app.post('/user/delete_alias', userLimiter, auth, jsonParser, handleDeleteAliasRequest);
+app.post('/user/get_domains', limiter, auth, jsonParser, handleGetDomainsRequest);
 
 app.post('/database/save_temp_token', limiter, auth, jsonParser, handleSaveTempTokenDatabaseRequest);
 

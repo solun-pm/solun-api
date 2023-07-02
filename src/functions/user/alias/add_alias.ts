@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { dbConnect, findOneDocument, User, User_Aliases } from 'solun-database-package';
+import { dbConnect, findOneDocument, findOneCASEDocument, User, User_Aliases } from 'solun-database-package';
 const { SolunApiClient } = require("../../../mail/mail");
 
 export async function handleCreateAliasRequest(req: Request, res: Response) {
@@ -27,8 +27,14 @@ export async function handleCreateAliasRequest(req: Request, res: Response) {
     if (!user) {
         return res.status(400).json({ message: "User does not exist" });
     }
+    
+    const checkIfFQAMailboxExists = await findOneCASEDocument(User, { fqe: fqa });
 
-    const checkIfFQAExists = await findOneDocument(User_Aliases, { fqa: fqa });
+    if (checkIfFQAMailboxExists) {
+        return res.status(400).json({ message: "Mailbox with this name already exists" });
+    }
+
+    const checkIfFQAExists = await findOneCASEDocument(User_Aliases, { fqa: fqa });
 
     if (checkIfFQAExists) {
         return res.status(400).json({ message: "Alias already exists" });
