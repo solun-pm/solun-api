@@ -57,6 +57,9 @@ import { handleLoginUserRequest } from './functions/user/login';
 import { handleUserDetailsUserRequest } from './functions/user/user_details';
 import { handleValidatePWDUserRequest } from './functions/user/validate_pwd';
 
+import { handleCheckRecoveryCodeRequest } from './functions/user/forgot/check_recovery_code';
+import { handleResetPasswordRequest } from './functions/user/forgot/reset_password';
+
 import { handleCreateAliasRequest } from './functions/user/alias/add_alias';
 import { handleGetAliasRequest } from './functions/user/alias/get_alias';
 import { handleDeleteAliasRequest } from './functions/user/alias/delete_alias';
@@ -179,6 +182,10 @@ app.post('/user/jwt_details', limiter, auth, jsonParser, handleJWTDetailsUserReq
 app.post('/user/login', limiter, auth, jsonParser, handleLoginUserRequest);
 app.post('/user/user_details', limiter, auth, jsonParser, handleUserDetailsUserRequest);
 app.post('/user/validate_pwd', limiter, auth, jsonParser, handleValidatePWDUserRequest);
+
+app.post('/user/check_recovery_code', limiter, auth, jsonParser, handleCheckRecoveryCodeRequest);
+app.post('/user/reset_password', limiter, auth, jsonParser, handleResetPasswordRequest);
+
 app.post('/user/add_alias', userLimiter, auth, jsonParser, handleCreateAliasRequest);
 app.post('/user/get_alias', limiter, auth, jsonParser, handleGetAliasRequest);
 app.post('/user/delete_alias', userLimiter, auth, jsonParser, handleDeleteAliasRequest);
