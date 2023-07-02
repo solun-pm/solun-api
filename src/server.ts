@@ -65,6 +65,7 @@ import { handleCreateAliasRequest } from './functions/user/alias/add_alias';
 import { handleGetAliasRequest } from './functions/user/alias/get_alias';
 import { handleDeleteAliasRequest } from './functions/user/alias/delete_alias';
 import { handleGetDomainsRequest } from './functions/user/alias/get_domains';
+import { handleSwitchStateAliasRequest } from './functions/user/alias/alias_active_switch';
 
 import { handleSaveTempTokenDatabaseRequest } from './functions/database/save_temp_token';
 
@@ -192,6 +193,7 @@ app.post('/user/add_alias', userLimiter, auth, jsonParser, handleCreateAliasRequ
 app.post('/user/get_alias', limiter, auth, jsonParser, handleGetAliasRequest);
 app.post('/user/delete_alias', userLimiter, auth, jsonParser, handleDeleteAliasRequest);
 app.post('/user/get_domains', limiter, auth, jsonParser, handleGetDomainsRequest);
+app.post('/user/switch_alias_state', userLimiter, auth, jsonParser, handleSwitchStateAliasRequest);
 
 app.post('/database/save_temp_token', limiter, auth, jsonParser, handleSaveTempTokenDatabaseRequest);
 
