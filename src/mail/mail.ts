@@ -378,6 +378,26 @@ module.exports.SolunApiClient = class {
       console.error(responseData);
       throw new Error(responseData.msg);
     }
-  }; 
+  };
 
+  async addDomain(domain: any) {
+    if (!domain)
+      throw new Error("Domain must be provided as an object");
+  
+    return f(`${this.baseurl}/api/v1/add/domain`, {
+      method: "POST",
+      headers: {
+        "X-Api-Key": this.apikey,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(domain),
+    })
+      .then(async (res: { json: () => Promise<any> }) => {
+        const j = await res.json().catch();
+        if (j && j[0] && j[0].type === "success") return true;
+        console.error(j);
+        return false;
+      });
+  };
+  
 };

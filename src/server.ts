@@ -64,8 +64,11 @@ import { handleResetPasswordRequest } from './functions/user/forgot/reset_passwo
 import { handleCreateAliasRequest } from './functions/user/alias/add_alias';
 import { handleGetAliasRequest } from './functions/user/alias/get_alias';
 import { handleDeleteAliasRequest } from './functions/user/alias/delete_alias';
-import { handleGetDomainsRequest } from './functions/user/alias/get_domains';
+import { handleGetDomainsAliasRequest } from './functions/user/alias/get_domains';
 import { handleSwitchStateAliasRequest } from './functions/user/alias/alias_active_switch';
+
+import { handleCheckDomainRequest } from './functions/user/domain/check_domain';
+import { handleAddDomainRequest } from './functions/user/domain/add_domain';
 
 import { handleSaveTempTokenDatabaseRequest } from './functions/database/save_temp_token';
 
@@ -192,8 +195,11 @@ app.post('/user/reset_password', limiter, auth, jsonParser, handleResetPasswordR
 app.post('/user/add_alias', userLimiter, auth, jsonParser, handleCreateAliasRequest);
 app.post('/user/get_alias', limiter, auth, jsonParser, handleGetAliasRequest);
 app.post('/user/delete_alias', userLimiter, auth, jsonParser, handleDeleteAliasRequest);
-app.post('/user/get_domains', limiter, auth, jsonParser, handleGetDomainsRequest);
+app.post('/user/get_domains_alias', limiter, auth, jsonParser, handleGetDomainsAliasRequest);
 app.post('/user/switch_alias_state', userLimiter, auth, jsonParser, handleSwitchStateAliasRequest);
+
+app.post('/user/domain/check_domain', limiter, auth, jsonParser, handleCheckDomainRequest);
+app.post('/user/domain/add_domain', userLimiter, auth, jsonParser, handleAddDomainRequest);
 
 app.post('/database/save_temp_token', limiter, auth, jsonParser, handleSaveTempTokenDatabaseRequest);
 
