@@ -50,9 +50,9 @@ export async function handleAddDomainRequest(req: Request, res: Response) {
       return res.status(500).json({ message: "Something went wrong" });
     }
 
-    const createDKIM = await mcc.generateDKIM({
+    const createDKIM = await mcc.addDKIM({
       dkim_selector: "dkim",
-      domains: [domain],
+      domains: domain,
       key_size: 2048
     });
     

@@ -381,28 +381,23 @@ module.exports.SolunApiClient = class {
     }
   };
 
-  async generateDKIM(dkimData: any) {
-    if (!dkimData)
-      throw new Error("Domain must be provided as an object");
-  
-    const response = await fetch(`${this.baseurl}/api/v1/add/dkim`, {
-      method: "POST",
-      headers: {
-        "X-Api-Key": this.apikey,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(dkimData),
-    });
+  async addDKIM(dkim: any) {
+      if (!dkim) throw new Error("DKIM parameters must be provided as an object");
 
-    const responseData = await response.json();
-
-    if (responseData && responseData[0] && responseData[0].type === "success") {
-      return true;
-    } else {
-      console.error(responseData);
-      return false;
-    }
-  }
+      return f(`${this.baseurl}/api/v1/add/dkim`, {
+        method: "POST",
+        headers: {
+          "X-Api-Key": this.apikey,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dkim),
+      }).then(async (res: { json: () => Promise<any> }) => {
+        const j = await res.json().catch();
+        if (j && j[0] && j[0].type === "success") return true;
+        console.error(j);
+        return false;
+      });
+  };
   
   async getDKIMForDomain(domain: string): Promise<any> {
     const endpoint = `${this.baseurl}/api/v1/get/dkim/${domain}`;
