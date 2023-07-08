@@ -42,22 +42,21 @@ export async function handleAddDomainRequest(req: Request, res: Response) {
       mailboxes: 2,
       maxquota: 40960,
       quota: 40960,
+      rl_frame: "d",
+      rl_value: 500,
     });
   
-      if (!addDomain) {
-        return res.status(500).json({ message: "Something went wrong" });
-      }
+    if (!addDomain) {
+      return res.status(500).json({ message: "Something went wrong" });
+    }
 
-    // Rate limit domain
-    const updateRateLimit = await mcc.rateLimitDomain({
-      attr: {
-        rl_value: "500",
-        rl_frame: "d",
-      },
-      items: [domain],
+    const createDKIM = await mcc.generateDKIM({
+      dkim_selector: "dkim",
+      domains: [domain],
+      key_size: 2048
     });
 
-    if (!updateRateLimit) {
+    if (!createDKIM) {
       return res.status(500).json({ message: "Something went wrong" });
     }
 
