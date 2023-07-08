@@ -114,6 +114,28 @@ module.exports.SolunApiClient = class {
     }
   }
 
+  async rateLimitDomain(domain: any): Promise<boolean> {
+    if (!domain) throw new Error("Domain must be provided as Domain Object");
+
+    const response = await fetch(`${this.baseurl}/api/v1/edit/rl-domain/`, {
+      method: "POST",
+      headers: {
+        "X-Api-Key": this.apikey,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(domain),
+    });
+
+    const responseData = await response.json();
+
+    if (responseData && responseData[0] && responseData[0].type === "success") {
+      return true;
+    } else {
+      console.error(responseData);
+      return false;
+    }
+  }
+
   async addAppPassword(mailbox: any): Promise<boolean> {
       if (!mailbox) throw new Error("Mailbox must be provided as Mailbox Object");
 
@@ -372,11 +394,11 @@ module.exports.SolunApiClient = class {
   
     const responseData = await response.json();
   
-    if (responseData && response.status === 200) {
+    if (response.ok) {
       return responseData;
     } else {
       console.error(responseData);
-      throw new Error(responseData.msg);
+      throw new Error(responseData.msg || 'Something went wrong');
     }
   };
 
