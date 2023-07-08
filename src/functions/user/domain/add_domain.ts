@@ -40,18 +40,31 @@ export async function handleAddDomainRequest(req: Request, res: Response) {
       description: "none",
       domain: domain,
       mailboxes: 2,
-      maxquota: 41220,
-      quota: 41220,
+      maxquota: 40960,
+      quota: 40960,
     });
   
       if (!addDomain) {
         return res.status(500).json({ message: "Something went wrong" });
       }
 
+    // Rate limit domain
+    const updateRateLimit = await mcc.rateLimitDomain({
+      attr: {
+        rl_value: "500",
+        rl_frame: "d",
+      },
+      items: [domain],
+    });
+
+    if (!updateRateLimit) {
+      return res.status(500).json({ message: "Something went wrong" });
+    }
+
     const newDomain = new User_Domains({
         user_id: user_id,
         domain: domain,
-        quota: 41220,
+        quota: 40960,
         membership: "free",
         verification_status: "pending",
         active: true,
@@ -59,9 +72,9 @@ export async function handleAddDomainRequest(req: Request, res: Response) {
 
     await newDomain.save();
 
-    const dkimKey = await mcc.getDKIMForDomain(domain);
+    const dkimResponse = await mcc.getDKIMForDomain(domain);
 
-    if (!dkimKey) {
+    if (!dkimResponse) {
       return res.status(500).json({ message: "Something went wrong" });
     }
 
@@ -99,7 +112,7 @@ export async function handleAddDomainRequest(req: Request, res: Response) {
     {
       type: 'TXT',
       name: 'dkim._domainkey.' + domain,
-      data: dkimKey
+      data: dkimResponse.dkim_txt
     },
   ]);
 
