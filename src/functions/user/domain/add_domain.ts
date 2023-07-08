@@ -77,9 +77,6 @@ export async function handleAddDomainRequest(req: Request, res: Response) {
       return res.status(500).json({ message: "Something went wrong" });
     }
 
-    console.log(dkimResponse)
-    console.log(dkimResponse.dkim_txt)
-
   const dnsData = ([
     {
       type: 'MX',
