@@ -37,7 +37,7 @@ export async function handleAddDomainRequest(req: Request, res: Response) {
       aliases: 2,
       backupmx: 0,
       defquota: 1024,
-      description: "none",
+      description: "This domain got added by a Solun user via the interface",
       domain: domain,
       mailboxes: 2,
       maxquota: 40960,
@@ -77,6 +77,9 @@ export async function handleAddDomainRequest(req: Request, res: Response) {
     if (!dkimResponse) {
       return res.status(500).json({ message: "Something went wrong" });
     }
+
+    console.log(dkimResponse)
+    console.log(dkimResponse.dkim_txt)
 
   const dnsData = ([
     {
