@@ -55,10 +55,10 @@ export async function handleAddDomainRequest(req: Request, res: Response) {
       domains: [domain],
       key_size: 2048
     });
-
+    
     if (!createDKIM) {
       return res.status(500).json({ message: "Something went wrong" });
-    }
+    }    
 
     const newDomain = new User_Domains({
         user_id: user_id,
