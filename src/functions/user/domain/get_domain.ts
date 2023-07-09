@@ -34,6 +34,8 @@ export async function handleGetDomainDomainRequest(req: Request, res: Response) 
     
       const domain_mailbox_count = 0;
       const domain_alias_count = user_aliases.length;
+
+      const created_at = domain.createdAt;
     
       domains.push({
         domain: domain_name,
@@ -42,6 +44,7 @@ export async function handleGetDomainDomainRequest(req: Request, res: Response) 
         alias_count: domain_alias_count,
         mailbox_cap: mailbox_cap,
         alias_cap: alias_cap,
+        created_at: created_at
       });
     }
   
