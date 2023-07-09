@@ -70,6 +70,7 @@ import { handleSwitchStateAliasRequest } from './functions/user/alias/alias_acti
 import { handleCheckDomainRequest } from './functions/user/domain/check_domain';
 import { handleAddDomainRequest } from './functions/user/domain/add_domain';
 import { handleGetDomainDomainRequest } from './functions/user/domain/get_domain';
+import { handleGetDNSRecordsRequest } from './functions/user/domain/get_dns_records';
 
 import { handleSaveTempTokenDatabaseRequest } from './functions/database/save_temp_token';
 
@@ -202,6 +203,7 @@ app.post('/user/switch_alias_state', userLimiter, auth, jsonParser, handleSwitch
 app.post('/user/domain/check_domain', limiter, auth, jsonParser, handleCheckDomainRequest);
 app.post('/user/domain/add_domain', userLimiter, auth, jsonParser, handleAddDomainRequest);
 app.post('/user/domain/get_domain', limiter, auth, jsonParser, handleGetDomainDomainRequest);
+app.post('/user/domain/get_dns_records', limiter, auth, jsonParser, handleGetDNSRecordsRequest);
 
 app.post('/database/save_temp_token', limiter, auth, jsonParser, handleSaveTempTokenDatabaseRequest);
 
