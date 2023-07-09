@@ -31,6 +31,8 @@ export async function handleAddDomainRequest(req: Request, res: Response) {
         return res.status(400).json({ message: "Domain already exists" });
     }
 
+    const quota = 2048;
+
     // Create domain on mailserver
     const addDomain = await mcc.addDomain({
       active: 1,
@@ -40,8 +42,8 @@ export async function handleAddDomainRequest(req: Request, res: Response) {
       description: "This domain got added by a Solun user via the interface",
       domain: domain,
       mailboxes: 2,
-      maxquota: 40960,
-      quota: 40960,
+      maxquota: quota,
+      quota: quota,
       rl_frame: "d",
       rl_value: 500,
     });
@@ -63,7 +65,7 @@ export async function handleAddDomainRequest(req: Request, res: Response) {
     const newDomain = new User_Domains({
         user_id: user_id,
         domain: domain,
-        quota: 40960,
+        quota: quota,
         membership: "free",
         verification_status: "pending",
         active: true,
