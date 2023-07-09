@@ -63,7 +63,6 @@ export async function handleAddDomainRequest(req: Request, res: Response) {
         user_id: user_id,
         domain: domain,
         quota: quota,
-        membership: "free",
         verification_status: "pending",
         active: true,
     });
