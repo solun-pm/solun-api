@@ -52,15 +52,12 @@ export async function handleAddDomainRequest(req: Request, res: Response) {
       return res.status(500).json({ message: "Something went wrong" });
     }
 
-    const createDKIM = await mcc.addDKIM({
+    // Create DKIM key for domain
+    await mcc.addDKIM({
       dkim_selector: "dkim",
       domains: domain,
       key_size: 2048
-    });
-    
-    if (!createDKIM) {
-      return res.status(500).json({ message: "Something went wrong" });
-    }    
+    });   
 
     const newDomain = new User_Domains({
         user_id: user_id,
