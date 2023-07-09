@@ -27,7 +27,7 @@ export async function handleGetDomainDomainRequest(req: Request, res: Response) 
     for (let i = 0; i < user_domains.length; i++) {
       const domain = user_domains[i];
       const domain_name = domain.domain;
-      const domain_status = domain.status;
+      const domain_status = domain.verification_status;
       
       // Find aliases for this domain @TODO: add mailbox count
       const user_aliases = await findDocuments(User_Aliases, { domain: `@${domain_name}` });
