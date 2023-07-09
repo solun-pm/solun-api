@@ -45,7 +45,7 @@ export async function handleGetDomainDomainRequest(req: Request, res: Response) 
       });
     }
   
-    return res.status(200).json({ domains: domains });
+    return res.status(200).json({ domains });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Something went wrong" });
