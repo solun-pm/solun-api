@@ -26,6 +26,7 @@ export async function handleGetDomainDomainRequest(req: Request, res: Response) 
     let domains = [];
     for (let i = 0; i < user_domains.length; i++) {
       const domain = user_domains[i];
+      const domain_id = domain._id;
       const domain_name = domain.domain;
       const domain_status = domain.verification_status;
       
@@ -38,6 +39,7 @@ export async function handleGetDomainDomainRequest(req: Request, res: Response) 
       const created_at = domain.createdAt;
     
       domains.push({
+        domain_id: domain_id,
         domain: domain_name,
         status: domain_status,
         mailbox_count: domain_mailbox_count,
