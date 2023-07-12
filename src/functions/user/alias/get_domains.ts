@@ -8,7 +8,7 @@ export async function handleGetDomainsAliasRequest(req: Request, res: Response) 
     let user_id = req.body.user_id;
 
     const user = await findOneDocument(User, { user_id: user_id });
-    const user_domains = await findDocuments(User_Domains, { user_id: user_id });
+    const user_domains = await findDocuments(User_Domains, { user_id: user_id, verification_status: "active" });
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
