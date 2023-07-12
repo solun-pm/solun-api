@@ -20,7 +20,7 @@ export async function handleSwitchStateAliasRequest(req: Request, res: Response)
     }
 
     const user = await findOneDocument(User, { user_id: user_id });
-    const alias = await findOneDocument(User_Aliases, { fqa: fqa });
+    const alias = await findOneDocument(User_Aliases, { fqa: fqa, user_id: user_id });
 
     if (!user) {
         return res.status(400).json({ message: "User does not exist" });
@@ -28,10 +28,6 @@ export async function handleSwitchStateAliasRequest(req: Request, res: Response)
 
     if (!alias) {
         return res.status(400).json({ message: "Alias does not exist" });
-    }
-
-    if (alias.user_id !== user_id) {
-        return res.status(401).json({ message: "Alias does not belong to user" });
     }
 
     // Update alias on mailserver

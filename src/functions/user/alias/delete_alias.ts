@@ -19,12 +19,9 @@ export async function handleDeleteAliasRequest(req: Request, res: Response) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const alias = await findOneDocument(User_Aliases, { fqa: fqa });
+    const alias = await findOneDocument(User_Aliases, { fqa: fqa, user_id: user_id });
     if (!alias) {
-      return res.status(404).json({ message: "Alias not found" });
-    }
-    if (alias.user_id !== user_id) {
-      return res.status(401).json({ message: "Alias does not belong to user" });
+      return res.status(404).json({ message: "Alias not found or does not belong to user" });
     }
 
     // Delete alias on mailserver

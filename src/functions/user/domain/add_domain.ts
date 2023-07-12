@@ -57,12 +57,14 @@ export async function handleAddDomainRequest(req: Request, res: Response) {
       dkim_selector: "dkim",
       domains: domain,
       key_size: 2048
-    });   
+    });
 
     const newDomain = new User_Domains({
         user_id: user_id,
         domain: domain,
         quota: quota,
+        rate_limit: 500,
+        rate_limit_interval: "d",
         verification_status: "pending",
         active: true,
     });
