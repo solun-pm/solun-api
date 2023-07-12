@@ -71,6 +71,7 @@ import { handleCheckDomainRequest } from './functions/user/domain/check_domain';
 import { handleAddDomainRequest } from './functions/user/domain/add_domain';
 import { handleGetDomainDomainRequest } from './functions/user/domain/get_domain';
 import { handleGetDNSRecordsRequest } from './functions/user/domain/get_dns_records';
+import { handleGetDomainDetailsRequest } from './functions/user/domain/get_domain_details';
 
 import { handleSaveTempTokenDatabaseRequest } from './functions/database/save_temp_token';
 
@@ -139,6 +140,7 @@ app.use(morganMiddleware);
 
 async function auth(req: any, res:any, next: any) {
   const token = req.headers['authorization'];
+  console.log(token)
   if (token === process.env.SOLUN_API_KEY) {
       next();
   } else {
@@ -204,6 +206,7 @@ app.post('/user/domain/check_domain', limiter, auth, jsonParser, handleCheckDoma
 app.post('/user/domain/add_domain', userLimiter, auth, jsonParser, handleAddDomainRequest);
 app.post('/user/domain/get_domain', limiter, auth, jsonParser, handleGetDomainDomainRequest);
 app.post('/user/domain/get_dns_records', limiter, auth, jsonParser, handleGetDNSRecordsRequest);
+app.post('/user/domain/get_domain_details', limiter, auth, jsonParser, handleGetDomainDetailsRequest);
 
 app.post('/database/save_temp_token', limiter, auth, jsonParser, handleSaveTempTokenDatabaseRequest);
 
