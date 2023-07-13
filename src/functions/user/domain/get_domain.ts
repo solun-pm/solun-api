@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { dbConnect, findOneDocument, findDocuments, User, User_Aliases, User_Domains} from 'solun-database-package';
+import { dbConnect, findOneDocument, findDocuments, User, User_Aliases, User_Domains, User_Mailboxes } from 'solun-database-package';
 
 export async function handleGetDomainDomainRequest(req: Request, res: Response) {
     let mailbox_cap = 0;
@@ -30,10 +30,10 @@ export async function handleGetDomainDomainRequest(req: Request, res: Response) 
       const domain_name = domain.domain;
       const domain_status = domain.verification_status;
       
-      // Find aliases for this domain @TODO: add mailbox count
       const user_aliases = await findDocuments(User_Aliases, { domain: `@${domain_name}` });
+      const user_mailboxes = await findDocuments(User_Mailboxes, { domain: `@${domain_name}` });
     
-      const domain_mailbox_count = 0;
+      const domain_mailbox_count = user_mailboxes.length;
       const domain_alias_count = user_aliases.length;
 
       const created_at = domain.createdAt;
