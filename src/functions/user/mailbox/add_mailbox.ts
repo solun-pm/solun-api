@@ -49,7 +49,7 @@ export async function handleAddMailboxRequest(req: Request, res: Response) {
 
     const user = await findOneDocument(User, { fqe: fqe });
     const user_alias = await findOneDocument(User_Aliases, { fqa: fqe });
-    const user_domain = await findOneDocument(User_Domains, { domain: '@'+domain, user_id: user_id });
+    const user_domain = await findOneDocument(User_Domains, { domain: domain.replace('@', ''), user_id: user_id });
     const user_mailbox = await findOneDocument(User_Mailboxes, { fqe: fqe });
 
     if (user) {
