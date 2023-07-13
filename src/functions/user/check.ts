@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { dbConnect, findOneCASEDocument, User, User_Aliases } from 'solun-database-package';
+import { dbConnect, findOneCASEDocument, User, User_Aliases, User_Mailboxes } from 'solun-database-package';
 import { checkUsername } from 'solun-general-package';
 
 export async function handleCheckUserRequest(req: Request, res: Response) {
@@ -33,6 +33,7 @@ export async function handleCheckUserRequest(req: Request, res: Response) {
 
     const user = await findOneCASEDocument(User, { fqe: fqe });
     const user_alias = await findOneCASEDocument(User_Aliases, { fqa: fqe });
+    const user_mailbox = await findOneCASEDocument(User_Mailboxes, { fqe: fqe });
 
     if (user) {
         return res.status(200).json({ message: "User already exists", exists: true });
@@ -40,6 +41,10 @@ export async function handleCheckUserRequest(req: Request, res: Response) {
 
     if (user_alias) {
         return res.status(200).json({ message: "This mail is already in use as an alias", exists: true });
+    }
+
+    if (user_mailbox) {
+        return res.status(200).json({ message: "This mail is already in use as a mailbox", exists: true });
     }
 
     return res.status(200).json({ message: "User does not exist", exists: false });
