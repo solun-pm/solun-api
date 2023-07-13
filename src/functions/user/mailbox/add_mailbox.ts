@@ -118,7 +118,7 @@ export async function handleAddMailboxRequest(req: Request, res: Response) {
         return res.status(500).json({ message: "Something went wrong" });
       }
 
-    const newMailbox = new User({
+    const newMailbox = new User_Mailboxes({
       user_id: user_id,
       username: username,
       domain: domain,
