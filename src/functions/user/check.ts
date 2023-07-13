@@ -11,9 +11,20 @@ export async function handleCheckUserRequest(req: Request, res: Response) {
     let username = requestData.username;
     let domain = requestData.domain;
 
+    // TODO: Move to config file.
+    const SolunOwnedDomains = [
+      "@solun.pm",
+      "@6crypt.com",
+      "@seal.pm",
+      "@xolus.de",
+      "@cipher.pm",
+    ];
+
+    const isSolunDomain = SolunOwnedDomains.includes(domain) ? true : false;
+
     const trimmedUsername = username.trim();
 
-    const usernameCheck = checkUsername(username);
+    const usernameCheck = checkUsername(username, isSolunDomain);
     if (usernameCheck.message !== "") {
         return res.status(400).json({ message: usernameCheck.message, exists: true });
     }
