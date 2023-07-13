@@ -24,7 +24,7 @@ export async function handleCheckUserRequest(req: Request, res: Response) {
 
     const trimmedUsername = username.trim();
 
-    const usernameCheck = checkUsername(username, isSolunDomain);
+    const usernameCheck = checkUsername(username, !isSolunDomain);
     if (usernameCheck.message !== "") {
         return res.status(400).json({ message: usernameCheck.message, exists: true });
     }
