@@ -38,6 +38,7 @@ export async function handleGetMailboxRequest(req: Request, res: Response) {
             const mailbox_rate_limit_interval = mailbox.rate_limit_interval;
 
             const mailbox_active = mailbox.active;
+            const mailbox_created = mailbox.createdAt;
 
             mailboxes.push({
                 mailbox_id: mailbox_id,
@@ -47,7 +48,8 @@ export async function handleGetMailboxRequest(req: Request, res: Response) {
                 messages: mailbox_messages,
                 rate_limit: mailbox_rate_limit,
                 rate_limit_interval: mailbox_rate_limit_interval,
-                active: mailbox_active
+                active: mailbox_active,
+                created: mailbox_created
             });
         }
     
