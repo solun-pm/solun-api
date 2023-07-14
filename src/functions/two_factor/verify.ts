@@ -52,9 +52,7 @@ export async function handleVerifyTwoFactorRequest(req: Request, res: Response) 
         {
           fqe: user.fqe,
           username: user.username,
-          user_id: user.user_id,
-          private_key: decryptedPrivateKey,
-          password: password,
+          user_id: user.user_id
         },
         // @ts-ignore: Works fine with it
         JWT_SECRET_KEY,
