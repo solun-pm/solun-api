@@ -74,6 +74,7 @@ import { handleGetDNSRecordsRequest } from './functions/user/domain/get_dns_reco
 import { handleGetDomainDetailsRequest } from './functions/user/domain/get_domain_details';
 
 import { handleAddMailboxRequest } from './functions/user/mailbox/add_mailbox';
+import { handleGetMailboxRequest } from './functions/user/mailbox/get_mailbox';
 
 import { handleSaveTempTokenDatabaseRequest } from './functions/database/save_temp_token';
 
@@ -211,6 +212,7 @@ app.post('/user/domain/get_dns_records', limiter, auth, jsonParser, handleGetDNS
 app.post('/user/domain/get_domain_details', limiter, auth, jsonParser, handleGetDomainDetailsRequest);
 
 app.post('/user/mailbox/add_mailbox', userLimiter, auth, jsonParser, handleAddMailboxRequest);
+app.post('/user/mailbox/get_mailbox', limiter, auth, jsonParser, handleGetMailboxRequest);
 
 app.post('/database/save_temp_token', limiter, auth, jsonParser, handleSaveTempTokenDatabaseRequest);
 

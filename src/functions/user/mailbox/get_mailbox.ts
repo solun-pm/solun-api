@@ -1,0 +1,59 @@
+import { Request, Response } from 'express';
+import { dbConnect, findOneDocument, User, User_Mailboxes } from 'solun-database-package';
+const { SolunApiClient } = require("../../../mail/mail");
+
+export async function handleGetMailboxRequest(req: Request, res: Response) {
+    try {
+        await dbConnect();
+
+        const mcc = new SolunApiClient(
+            process.env.MAILSERVER_BASEURL,
+            process.env.MAILSERVER_API_KEY
+        );
+
+        let user_id = req.body.user_id;
+        let domain_id = req.body.domain_id;
+
+        const user = await findOneDocument(User, { user_id: user_id });
+
+        if (!user) {
+        return res.status(404).json({ message: "User not found" });
+        }
+
+        const user_mailboxes = await User_Mailboxes.find({ user_id: user_id, _id: domain_id });
+
+        let mailboxes = [];
+        for (let i = 0; i < user_mailboxes.length; i++) {
+            const mailbox = user_mailboxes[i];
+            const mailbox_id = mailbox._id;
+            const mailbox_name = mailbox.fqe;
+            
+            const mailbox_details = await mcc.getMailboxDetails(mailbox_name);
+
+            const mailbox_quota = mailbox_details.quota;
+            const mailbox_quota_used = mailbox_details.quota_used;
+            const mailbox_messages = mailbox_details.messages;
+
+            const mailbox_rate_limit = mailbox.rate_limit;
+            const mailbox_rate_limit_interval = mailbox.rate_limit_interval;
+
+            const mailbox_active = mailbox.active;
+
+            mailboxes.push({
+                mailbox_id: mailbox_id,
+                fqe: mailbox_name,
+                quota: mailbox_quota,
+                quota_used: mailbox_quota_used,
+                messages: mailbox_messages,
+                rate_limit: mailbox_rate_limit,
+                rate_limit_interval: mailbox_rate_limit_interval,
+                active: mailbox_active
+            });
+        }
+    
+        return res.status(200).json(mailboxes);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Something went wrong" });
+    }
+}
