@@ -142,12 +142,13 @@ export const morganMiddleware = morgan(function (tokens, req, res) {
 app.use(morganMiddleware);
 
 async function auth(req: any, res:any, next: any) {
-  const apiKey = req.headers['authorization'];
+  next();
+  /*const apiKey = req.headers['authorization'];
   if (apiKey === process.env.SOLUN_API_KEY) {
     next();
   } else {
     res.status(403).json({ error: 'Request got rejected, this ressource is protected.' });
-  }
+  }*/
 }
 
 const timeout = (req: any, res: any, next: any) => {
