@@ -23,7 +23,7 @@ export async function handleAddMailboxRequest(req: Request, res: Response) {
     let quota = req.body.quota;
 
     if (!user_id || !username || !domain || !password || !confirmPassword) {
-        return res.status(400).json({ message: "Please fill in all fields" });
+        return res.status(400).json({ message: "Please fill in all fields", valid: false });
     }
 
      // TODO: Move to config file.
@@ -53,19 +53,19 @@ export async function handleAddMailboxRequest(req: Request, res: Response) {
     const user_mailbox = await findOneDocument(User_Mailboxes, { fqe: fqe });
 
     if (user) {
-        return res.status(400).json({ message: "User already exists" });
+        return res.status(400).json({ message: "User already exists", valid: false });
     }
 
     if (user_alias) {
-        return res.status(400).json({ message: "This mail is already in use as an alias" });
+        return res.status(400).json({ message: "This mail is already in use as an alias", valid: false });
     }
 
     if (!user_domain) {
-        return res.status(400).json({ message: "This domain does not exist or does not belong to you" });
+        return res.status(400).json({ message: "This domain does not exist or does not belong to you", valid: false });
     }
 
     if (user_mailbox) {
-        return res.status(400).json({ message: "This mailbox already exists" });
+        return res.status(400).json({ message: "This mailbox already exists", valid: false });
     }
 
     const passwordHashed = await hashPassword(password);
@@ -93,7 +93,7 @@ export async function handleAddMailboxRequest(req: Request, res: Response) {
       });
   
       if (!createMail) {
-        return res.status(500).json({ message: "Something went wrong" });
+        return res.status(500).json({ message: "Something went wrong", valid: false });
       }
   
       // Set rate limit for user
@@ -106,7 +106,7 @@ export async function handleAddMailboxRequest(req: Request, res: Response) {
       });
   
       if (!updateRateLimit) {
-        return res.status(500).json({ message: "Something went wrong" });
+        return res.status(500).json({ message: "Something went wrong", valid: false });
       }
 
       const updateUserACL = await mcc.updateMailboxACL(
@@ -115,7 +115,7 @@ export async function handleAddMailboxRequest(req: Request, res: Response) {
       );
 
       if (!updateUserACL) {
-        return res.status(500).json({ message: "Something went wrong" });
+        return res.status(500).json({ message: "Something went wrong", valid: false });
       }
 
     const newMailbox = new User_Mailboxes({
@@ -133,7 +133,7 @@ export async function handleAddMailboxRequest(req: Request, res: Response) {
 
     await newMailbox.save();
 
-    return res.status(200).json({ message: "Mailbox created successfully" });
+    return res.status(200).json({ message: "Mailbox created successfully", valid: true });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Something went wrong" });
