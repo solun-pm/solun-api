@@ -21,6 +21,9 @@ export async function handleGetMailboxRequest(req: Request, res: Response) {
         }
 
         const user_mailboxes = await findDocuments(User_Mailboxes, { _id: domain_id, user_id: user_id });
+        console.log(user_mailboxes)
+        const user_mailboxes2 = await findDocuments(User_Mailboxes, { user_id: user_id });
+        console.log(user_mailboxes2)
 
         let mailboxes = [];
         for (let i = 0; i < user_mailboxes.length; i++) {
