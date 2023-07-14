@@ -154,6 +154,9 @@ async function auth(req: any, res:any, next: any) {
   const origin = req.headers.origin;
   const apiKey = req.headers['authorization'];
 
+  console.log(apiKey)
+  console.log(origin)
+
   if (apiKeys[origin] && apiKeys[origin] === apiKey) {
     next();
   } else {
