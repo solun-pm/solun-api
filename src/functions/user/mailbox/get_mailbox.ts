@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { dbConnect, findOneDocument, User, User_Mailboxes } from 'solun-database-package';
+import { dbConnect, findOneDocument, findDocuments, User, User_Mailboxes } from 'solun-database-package';
 const { SolunApiClient } = require("../../../mail/mail");
 
 export async function handleGetMailboxRequest(req: Request, res: Response) {
@@ -20,7 +20,7 @@ export async function handleGetMailboxRequest(req: Request, res: Response) {
         return res.status(404).json({ message: "User not found" });
         }
 
-        const user_mailboxes = await User_Mailboxes.find({ user_id: user_id, _id: domain_id });
+        const user_mailboxes = await findDocuments(User_Mailboxes, { _id: domain_id, user_id: user_id });
 
         let mailboxes = [];
         for (let i = 0; i < user_mailboxes.length; i++) {
