@@ -38,7 +38,7 @@ export async function handleGetMailboxRequest(req: Request, res: Response) {
             const mailbox_id = mailbox._id;
             const mailbox_name = mailbox.fqe;
             
-            const mailbox_details = await mcc.getMailboxDetails(mailbox_name);
+            const mailbox_details = await mcc.getMailbox(mailbox_name);
 
             const mailbox_quota = mailbox_details.quota;
             const mailbox_quota_used = mailbox_details.quota_used;
