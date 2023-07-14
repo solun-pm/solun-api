@@ -59,7 +59,7 @@ export async function handleGetMailboxRequest(req: Request, res: Response) {
                 rate_limit: mailbox_rate_limit,
                 rate_limit_interval: mailbox_rate_limit_interval,
                 active: mailbox_active,
-                created: mailbox_created
+                created_at: mailbox_created
             });
         }
     
