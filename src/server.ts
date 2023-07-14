@@ -142,12 +142,22 @@ export const morganMiddleware = morgan(function (tokens, req, res) {
 app.use(morganMiddleware);
 
 async function auth(req: any, res:any, next: any) {
-  const token = req.headers['authorization'];
-  console.log(token)
-  if (token === process.env.SOLUN_API_KEY) {
-      next();
+  const apiKeys = {
+    "https://solun.pm": process.env.SOLUN_AUTH_KEY,
+    "https://dev.solun.pm": process.env.SOLUN_AUTH_KEY,
+    "https://auth.solun.pm/": process.env.SOLUN_AUTH_KEY,
+    "https://dev-auth.solun.pm": process.env.SOLUN_AUTH_KEY,
+    "https://mail.solun.pm": process.env.SOLUN_AUTH_KEY,
+    "https://dev-mail.solun.pm": process.env.SOLUN_AUTH_KEY,
+  } as any;
+
+  const origin = req.headers.origin;
+  const apiKey = req.headers['authorization'];
+
+  if (apiKeys[origin] && apiKeys[origin] === apiKey) {
+    next();
   } else {
-      res.status(403).json({ error: "Request got rejected, this ressource is protected by Solun Eagle-Eye." });
+    res.status(403).json({ error: 'Request got rejected, this ressource is protected.' });
   }
 }
 
