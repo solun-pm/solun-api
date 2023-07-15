@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { dbConnect, findOneDocument, deleteOneDocument, User, User_Domains, User_Mailboxes } from 'solun-database-package';
+import { dbConnect, findOneDocument, deleteOneDocument, User, User_Domains, User_Mailboxes, User_Aliases } from 'solun-database-package';
 const { SolunApiClient } = require("../../../mail/mail");
 
 
@@ -24,17 +24,36 @@ try {
     const user = await findOneDocument(User, { user_id: user_id });
     const user_domains = await findOneDocument(User_Domains, { user_id: user_id });
     const user_mailboxes = await findOneDocument(User_Mailboxes, { user_id: user_id, _id: mailbox_id, domain: '@'+user_domains.domain });
+    const user_aliases = await findOneDocument(User_Aliases, { user_id: user_id, domain: '@'+user_domains.domain });
 
     if (!user || !user_domains || !user_mailboxes) {
         return res.status(400).json({ message: "User does not exist or is not authorized" });
     }
 
+    // Delete aliases on mailserver and database when mailbox is defined as goto address
+    if(user_aliases) {
+        for(let i = 0; i < user_aliases.length; i++) {
+            if(user_aliases[i].goto === user_mailboxes.fqe) {
+                const deleteAlias = await mcc.deleteAlias([user_aliases[i].fqa]);
+                if (!deleteAlias) {
+                    return res.status(500).json({ message: "Something went wrong" });
+                }
+                await deleteOneDocument(
+                    User_Aliases,
+                    { user_id: user_id, _id: user_aliases[i]._id, domain: '@'+user_domains.domain }
+                );
+            }
+        }
+    }
+
+    // Delete mailbox on mailserver
     const deleteMailbox = await mcc.deleteMailbox([user_mailboxes.fqe]);
 
     if (!deleteMailbox) {
         return res.status(500).json({ message: "Something went wrong" });
     }
 
+    // Delete mailbox on database
     await deleteOneDocument(
         User_Mailboxes,
         { user_id: user_id, _id: mailbox_id, domain: '@'+user_domains.domain }
