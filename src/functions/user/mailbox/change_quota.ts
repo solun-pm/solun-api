@@ -32,7 +32,7 @@ try {
     }
 
     if (membership === 'free') {
-        if (quota !== 512 || quota !== 1024) {
+        if (quota != 512 || quota != 1024) {
             return res.status(400).json({ message: "Quota must be 512 or 1024 for this membership" });
         }
     }
