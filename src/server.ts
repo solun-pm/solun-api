@@ -75,6 +75,7 @@ import { handleGetDomainDetailsRequest } from './functions/user/domain/get_domai
 
 import { handleAddMailboxRequest } from './functions/user/mailbox/add_mailbox';
 import { handleGetMailboxRequest } from './functions/user/mailbox/get_mailbox';
+import { handleGetMailboxDetailsRequest } from './functions/user/mailbox/get_mailbox_details';
 
 import { handleSaveTempTokenDatabaseRequest } from './functions/database/save_temp_token';
 
@@ -213,6 +214,7 @@ app.post('/user/domain/get_domain_details', limiter, auth, jsonParser, handleGet
 
 app.post('/user/mailbox/add_mailbox', userLimiter, auth, jsonParser, handleAddMailboxRequest);
 app.post('/user/mailbox/get_mailbox', limiter, auth, jsonParser, handleGetMailboxRequest);
+app.post('/user/mailbox/get_mailbox_details', limiter, auth, jsonParser, handleGetMailboxDetailsRequest);
 
 app.post('/database/save_temp_token', limiter, auth, jsonParser, handleSaveTempTokenDatabaseRequest);
 
