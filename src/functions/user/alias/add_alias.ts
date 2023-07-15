@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { dbConnect, findOneDocument, findOneCASEDocument, User, User_Aliases, User_Mailboxes } from 'solun-database-package';
 import { isValidEmail } from 'solun-general-package';
 const { SolunApiClient } = require("../../../mail/mail");
+import { checkPlanCaps } from '../../../plans/check';
 
 export async function handleCreateAliasRequest(req: Request, res: Response) {
   try {
@@ -35,6 +36,12 @@ export async function handleCreateAliasRequest(req: Request, res: Response) {
 
     if (!user) {
         return res.status(400).json({ message: "User does not exist" });
+    }
+
+    const caps = checkPlanCaps(user.membership);
+    const maxAliases = caps[0].maxAliases;
+    if (user.aliases >= maxAliases) {
+        return res.status(400).json({ message: "You have reached your maximum number of aliases for your plan" });
     }
     
     const checkIfFQAMailboxExists = await findOneCASEDocument(User, { fqe: fqa });

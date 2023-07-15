@@ -3,6 +3,7 @@ import { generateKey } from "openpgp";
 import { dbConnect, findOneDocument, User, User_Mailboxes, User_Aliases, User_Domains } from 'solun-database-package';
 import { hashPassword, checkUsername, checkPassword, encryptAuthPM } from 'solun-general-package';
 const { SolunApiClient } = require("../../../mail/mail");
+import { checkPlanCaps } from '../../../plans/check';
 
 export async function handleAddMailboxRequest(req: Request, res: Response) {
   try {
@@ -47,13 +48,21 @@ export async function handleAddMailboxRequest(req: Request, res: Response) {
         return res.status(400).json({ message: passwordCheck.message });
     }
 
+    const user_details = await findOneDocument(User, { user_id: user_id });
+
+    const caps = checkPlanCaps(user_details.membership);
+    const maxMailboxes = caps[0].maxMailboxes;
+    if (user_details.mailboxes >= maxMailboxes) {
+        return res.status(400).json({ message: "You have reached your maximum number of mailboxes for your plan", valid: false });
+    }
+
     const user = await findOneDocument(User, { fqe: fqe });
     const user_alias = await findOneDocument(User_Aliases, { fqa: fqe });
     const user_domain = await findOneDocument(User_Domains, { domain: domain.replace('@', ''), user_id: user_id });
     const user_mailbox = await findOneDocument(User_Mailboxes, { fqe: fqe });
 
     if (user) {
-        return res.status(400).json({ message: "User already exists", valid: false });
+        return res.status(400).json({ message: "This mailbox already exists", valid: false });
     }
 
     if (user_alias) {

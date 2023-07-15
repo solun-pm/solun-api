@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { dbConnect, findOneDocument, findOneCASEDocument, User, User_Domains } from 'solun-database-package';
 const { SolunApiClient } = require("../../../mail/mail");
+import { checkPlanCaps } from '../../../plans/check';
 
 export async function handleAddDomainRequest(req: Request, res: Response) {
   try {
@@ -23,6 +24,12 @@ export async function handleAddDomainRequest(req: Request, res: Response) {
 
     if (!user) {
         return res.status(400).json({ message: "User does not exist" });
+    }
+
+    const caps = checkPlanCaps(user.membership);
+    const maxDomains = caps[0].maxDomains;
+    if (user.domains >= maxDomains) {
+        return res.status(400).json({ message: "You have reached your maximum number of domains for your plan" });
     }
     
     const checkIfDomainExists = await findOneDocument(User_Domains, { domain: domain });
