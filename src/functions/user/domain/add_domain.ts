@@ -64,7 +64,7 @@ export async function handleAddDomainRequest(req: Request, res: Response) {
         domain: domain,
         quota: quota,
         rate_limit: 500,
-        rate_limit_interval: "d",
+        rate_limit_interval: "D",
         verification_status: "pending",
         active: true,
     });

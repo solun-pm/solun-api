@@ -128,7 +128,7 @@ export async function handleAddMailboxRequest(req: Request, res: Response) {
       public_key: publicKey,
       quota: quota,
       rate_limit: 100,
-      rate_limit_interval: "d",
+      rate_limit_interval: "D",
     });
 
     await newMailbox.save();
