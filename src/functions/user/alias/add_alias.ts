@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { dbConnect, findOneDocument, findOneCASEDocument, User, User_Aliases, User_Mailboxes } from 'solun-database-package';
+import { isValidEmail } from 'solun-general-package';
 const { SolunApiClient } = require("../../../mail/mail");
 
 export async function handleCreateAliasRequest(req: Request, res: Response) {
@@ -20,6 +21,14 @@ export async function handleCreateAliasRequest(req: Request, res: Response) {
 
     if (!user_id || !aliasName || !domain) {
         return res.status(400).json({ message: "Please fill in all fields" });
+    }
+
+    if (!isValidEmail(goto)) {
+        return res.status(400).json({ message: "Please enter a valid goto address" });
+    }
+
+    if(!isValidEmail(fqa)) {
+        return res.status(400).json({ message: "Please enter a valid alias address" });
     }
 
     const user = await findOneDocument(User, { user_id: user_id });
