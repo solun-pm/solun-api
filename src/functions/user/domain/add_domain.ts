@@ -29,7 +29,7 @@ export async function handleAddDomainRequest(req: Request, res: Response) {
     const caps = checkPlanCaps(user.membership);
     const maxDomains = caps[0].maxDomains;
     if (user.domains >= maxDomains) {
-        return res.status(400).json({ message: "You have reached your maximum number of domains for your plan" });
+        return res.status(400).json({ message: "You have reached your maximum number of domains for your plan", code: "geringverdiener" });
     }
     
     const checkIfDomainExists = await findOneDocument(User_Domains, { domain: domain });
