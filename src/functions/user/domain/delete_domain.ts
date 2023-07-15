@@ -41,6 +41,11 @@ try {
                     User_Aliases,
                     { user_id: user_id, _id: alias._id, domain: '@'+user_domains.domain }
                 );
+
+                await User.updateOne(
+                    { user_id: user_id },
+                    { $inc: { aliases: -1 } }
+                );
             }
         }
     }
@@ -57,6 +62,11 @@ try {
                 await deleteOneDocument(
                     User_Mailboxes,
                     { user_id: user_id, _id: mailbox._id, domain: '@'+user_domains.domain }
+                );
+
+                await User.updateOne(
+                    { user_id: user_id },
+                    { $inc: { mailboxes: -1 } }
                 );
             }
         }
@@ -79,6 +89,11 @@ try {
     await deleteOneDocument(
         User_Domains,
         { user_id: user_id, _id: domain_id }
+    );
+
+    await User.updateOne(
+        { user_id: user_id },
+        { $inc: { domains: -1 } }
     );
 
     return res.status(200).json({ message: "Deleted domain successfully" });

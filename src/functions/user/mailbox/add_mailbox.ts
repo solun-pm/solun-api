@@ -142,6 +142,11 @@ export async function handleAddMailboxRequest(req: Request, res: Response) {
 
     await newMailbox.save();
 
+    await user_details.updateOne(
+      { user_id: user_id },
+      { $inc: { mailboxes: 1 } }
+    );
+
     return res.status(200).json({ message: "Mailbox created successfully", valid: true });
   } catch (error) {
     console.error(error);

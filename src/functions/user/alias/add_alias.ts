@@ -85,6 +85,11 @@ export async function handleCreateAliasRequest(req: Request, res: Response) {
 
     await newAlias.save();
 
+    await User.updateOne(
+        { user_id: user_id },
+        { $inc: { aliases: 1 } }
+    );
+
     return res.status(200).json({ message: "Alias created successfully" });
   } catch (error) {
     console.error(error);

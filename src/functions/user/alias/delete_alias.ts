@@ -33,6 +33,11 @@ export async function handleDeleteAliasRequest(req: Request, res: Response) {
 
     await deleteOneDocument(User_Aliases, { fqa: fqa });
 
+    await User.updateOne(
+      { user_id: user_id },
+      { $inc: { aliases: -1 } }
+    );
+
     return res.status(200).json({ message: "Alias deleted successfully" });
   } catch (error) {
     console.error(error);

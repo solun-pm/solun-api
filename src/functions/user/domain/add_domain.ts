@@ -122,6 +122,11 @@ export async function handleAddDomainRequest(req: Request, res: Response) {
     },
   ]);
 
+  await User.updateOne(
+    { user_id: user_id },
+    { $inc: { domains: 1 } }
+  );
+
     return res.status(200).json({ message: "Domain created successfully", dnsData: dnsData });
   } catch (error) {
     console.error(error);
