@@ -76,6 +76,7 @@ import { handleGetDomainDetailsRequest } from './functions/user/domain/get_domai
 import { handleAddMailboxRequest } from './functions/user/mailbox/add_mailbox';
 import { handleGetMailboxRequest } from './functions/user/mailbox/get_mailbox';
 import { handleGetMailboxDetailsRequest } from './functions/user/mailbox/get_mailbox_details';
+import { handleChangePWDMailboxRequest } from './functions/user/mailbox/change_pwd';
 
 import { handleSaveTempTokenDatabaseRequest } from './functions/database/save_temp_token';
 
@@ -187,7 +188,7 @@ app.post('/file/download', timeout, limiter, jsonParser, handleDownloadFileReque
 app.post('/file/delete', limiter, jsonParser, handleDeleteFileRequest);
 
 app.post('/user/beta_features', limiter, auth, jsonParser, handleBetaFeaturesUserRequest);
-app.post('/user/change_pwd', limiter, auth, jsonParser, handleChangePWDUserRequest);
+app.post('/user/change_pwd', userLimiter, auth, jsonParser, handleChangePWDUserRequest);
 app.post('/user/check', limiter, auth, jsonParser, handleCheckUserRequest);
 app.post('/user/create', userLimiter, auth, jsonParser, handleCreateUserRequest);
 app.post('/user/fast_login', limiter, auth, jsonParser, handleFastLoginUserRequest);
@@ -215,6 +216,7 @@ app.post('/user/domain/get_domain_details', limiter, auth, jsonParser, handleGet
 app.post('/user/mailbox/add_mailbox', userLimiter, auth, jsonParser, handleAddMailboxRequest);
 app.post('/user/mailbox/get_mailbox', limiter, auth, jsonParser, handleGetMailboxRequest);
 app.post('/user/mailbox/get_mailbox_details', limiter, auth, jsonParser, handleGetMailboxDetailsRequest);
+app.post('/user/mailbox/change_pwd', userLimiter, auth, jsonParser, handleChangePWDMailboxRequest);
 
 app.post('/database/save_temp_token', limiter, auth, jsonParser, handleSaveTempTokenDatabaseRequest);
 
