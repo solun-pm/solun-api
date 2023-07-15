@@ -69,6 +69,12 @@ try {
         return res.status(500).json({ message: "Something went wrong" });
     }
 
+    const deleteDKIM = await mcc.deleteDKIM([user_domains.domain]);
+
+    if (!deleteDKIM) {
+        return res.status(500).json({ message: "Something went wrong" });
+    }
+
     // Delete domain on database
     await deleteOneDocument(
         User_Domains,

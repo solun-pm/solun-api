@@ -398,6 +398,26 @@ module.exports.SolunApiClient = class {
         return false;
       });
   };
+
+  async deleteDKIM(dkimIds: string[]) {
+    if (!dkimIds || !Array.isArray(dkimIds))
+      throw new Error("DKIM IDs must be provided as an array of strings.");
+
+    return f(`${this.baseurl}/api/v1/delete/dkim`, {
+      method: "POST",
+      headers: {
+        "X-Api-Key": this.apikey,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(dkimIds),
+    })
+      .then(async (res: { json: () => Promise<any> }) => {
+        const j = await res.json().catch();
+        if (j && j[0] && j[0].type === "success") return true;
+        console.error(j);
+        return false;
+      });
+  };
   
   async getDKIMForDomain(domain: string): Promise<any> {
     const endpoint = `${this.baseurl}/api/v1/get/dkim/${domain}`;
