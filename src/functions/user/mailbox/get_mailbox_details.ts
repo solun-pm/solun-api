@@ -9,8 +9,6 @@ export async function handleGetMailboxDetailsRequest(req: Request, res: Response
     let user_id = req.body.user_id;
     let domain_id = req.body.domain_id;
     let mailbox_id = req.body.mailbox_id;
-    
-    console.log(user_id, domain_id, mailbox_id)
 
     if (!user_id || !domain_id || !mailbox_id) {
         return res.status(400).json({ message: "Please fill in all fields" });
