@@ -66,6 +66,7 @@ import { handleGetAliasRequest } from './functions/user/alias/get_alias';
 import { handleDeleteAliasRequest } from './functions/user/alias/delete_alias';
 import { handleGetDomainsAliasRequest } from './functions/user/alias/get_domains';
 import { handleSwitchStateAliasRequest } from './functions/user/alias/alias_active_switch';
+import { handleGetGotosAliasRequest } from './functions/user/alias/get_gotos';
 
 import { handleCheckDomainRequest } from './functions/user/domain/check_domain';
 import { handleAddDomainRequest } from './functions/user/domain/add_domain';
@@ -204,11 +205,12 @@ app.post('/user/recovery', limiter, auth, jsonParser, handleRecoveryUserRequest)
 app.post('/user/check_recovery_code', limiter, auth, jsonParser, handleCheckRecoveryCodeRequest);
 app.post('/user/reset_password', limiter, auth, jsonParser, handleResetPasswordRequest);
 
-app.post('/user/add_alias', userLimiter, auth, jsonParser, handleCreateAliasRequest);
-app.post('/user/get_alias', limiter, auth, jsonParser, handleGetAliasRequest);
-app.post('/user/delete_alias', userLimiter, auth, jsonParser, handleDeleteAliasRequest);
-app.post('/user/get_domains_alias', limiter, auth, jsonParser, handleGetDomainsAliasRequest);
-app.post('/user/switch_alias_state', userLimiter, auth, jsonParser, handleSwitchStateAliasRequest);
+app.post('/user/alias/add_alias', userLimiter, auth, jsonParser, handleCreateAliasRequest);
+app.post('/user/alias/get_alias', limiter, auth, jsonParser, handleGetAliasRequest);
+app.post('/user/alias/delete_alias', userLimiter, auth, jsonParser, handleDeleteAliasRequest);
+app.post('/user/alias/get_domains_alias', limiter, auth, jsonParser, handleGetDomainsAliasRequest);
+app.post('/user/alias/switch_alias_state', userLimiter, auth, jsonParser, handleSwitchStateAliasRequest);
+app.post('/user/alias/get_gotos_alias', limiter, auth, jsonParser, handleGetGotosAliasRequest);
 
 app.post('/user/domain/check_domain', limiter, auth, jsonParser, handleCheckDomainRequest);
 app.post('/user/domain/add_domain', userLimiter, auth, jsonParser, handleAddDomainRequest);
