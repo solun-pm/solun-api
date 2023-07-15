@@ -77,6 +77,7 @@ import { handleAddMailboxRequest } from './functions/user/mailbox/add_mailbox';
 import { handleGetMailboxRequest } from './functions/user/mailbox/get_mailbox';
 import { handleGetMailboxDetailsRequest } from './functions/user/mailbox/get_mailbox_details';
 import { handleChangePWDMailboxRequest } from './functions/user/mailbox/change_pwd';
+import { handleChangeQuotaMailboxRequest } from './functions/user/mailbox/change_quota';
 
 import { handleSaveTempTokenDatabaseRequest } from './functions/database/save_temp_token';
 
@@ -217,6 +218,7 @@ app.post('/user/mailbox/add_mailbox', userLimiter, auth, jsonParser, handleAddMa
 app.post('/user/mailbox/get_mailbox', limiter, auth, jsonParser, handleGetMailboxRequest);
 app.post('/user/mailbox/get_mailbox_details', limiter, auth, jsonParser, handleGetMailboxDetailsRequest);
 app.post('/user/mailbox/change_pwd', userLimiter, auth, jsonParser, handleChangePWDMailboxRequest);
+app.post('/user/mailbox/change_quota', userLimiter, auth, jsonParser, handleChangeQuotaMailboxRequest);
 
 app.post('/database/save_temp_token', limiter, auth, jsonParser, handleSaveTempTokenDatabaseRequest);
 
