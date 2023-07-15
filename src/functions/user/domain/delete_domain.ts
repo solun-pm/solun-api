@@ -47,8 +47,9 @@ try {
 
     // Delete mailboxes on mailserver and database when domain is defined
     if(user_mailboxes) {
+        console.log(user_mailboxes)
         for(let i = 0; i < user_mailboxes.length; i++) {
-            console.log(user_mailboxes[i].domain);
+            console.log('user_mailboxes[i].domain: ', user_mailboxes[i].domain)
             if(user_mailboxes[i].domain === '@'+user_domains.domain) {
                 const deleteMailbox = await mcc.deleteMailbox([user_mailboxes[i].fqe]);
                 if (!deleteMailbox) {
