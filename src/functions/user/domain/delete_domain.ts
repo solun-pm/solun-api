@@ -3,7 +3,7 @@ import { dbConnect, findOneDocument, deleteOneDocument, User, User_Domains, User
 const { SolunApiClient } = require("../../../mail/mail");
 
 
-export async function handleDeleteMailboxRequest(req: Request, res: Response) {
+export async function handleDeleteDomainRequest(req: Request, res: Response) {
 try {
     const requestData = req.body;
 
@@ -29,18 +29,52 @@ try {
         return res.status(400).json({ message: "User does not exist or is not authorized" });
     }
 
-    const deleteMailbox = await mcc.deleteMailbox([user_mailboxes.fqe]);
+    // Delete aliases on mailserver and database when domain is defined
+    if(user_aliases) {
+        for(let i = 0; i < user_aliases.length; i++) {
+            if(user_aliases[i].domain === '@'+user_domains.domain) {
+                const deleteAlias = await mcc.deleteAlias([user_aliases[i].fqa]);
+                if (!deleteAlias) {
+                    return res.status(500).json({ message: "Something went wrong" });
+                }
+                await deleteOneDocument(
+                    User_Aliases,
+                    { user_id: user_id, _id: user_aliases[i]._id, domain: '@'+user_domains.domain }
+                );
+            }
+        }
+    }
 
-    if (!deleteMailbox) {
+    // Delete mailboxes on mailserver and database when domain is defined
+    if(user_mailboxes) {
+        for(let i = 0; i < user_mailboxes.length; i++) {
+            if(user_mailboxes[i].domain === '@'+user_domains.domain) {
+                const deleteMailbox = await mcc.deleteMailbox([user_mailboxes[i].fqe]);
+                if (!deleteMailbox) {
+                    return res.status(500).json({ message: "Something went wrong" });
+                }
+                await deleteOneDocument(
+                    User_Mailboxes,
+                    { user_id: user_id, _id: user_mailboxes[i]._id, domain: '@'+user_domains.domain }
+                );
+            }
+        }
+    }
+
+    // Delete domain on mailserver
+    const deleteDomain = await mcc.deleteDomain([user_domains.domain]);
+
+    if (!deleteDomain) {
         return res.status(500).json({ message: "Something went wrong" });
     }
 
+    // Delete domain on database
     await deleteOneDocument(
-        User_Mailboxes,
-        { user_id: user_id, _id: mailbox_id, domain: '@'+user_domains.domain }
+        User_Domains,
+        { user_id: user_id, _id: domain_id }
     );
 
-    return res.status(200).json({ message: "Deleted mailbox successfully" });
+    return res.status(200).json({ message: "Deleted domain successfully" });
 } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Something went wrong" });

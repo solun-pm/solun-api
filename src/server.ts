@@ -72,6 +72,7 @@ import { handleAddDomainRequest } from './functions/user/domain/add_domain';
 import { handleGetDomainDomainRequest } from './functions/user/domain/get_domain';
 import { handleGetDNSRecordsRequest } from './functions/user/domain/get_dns_records';
 import { handleGetDomainDetailsRequest } from './functions/user/domain/get_domain_details';
+import { handleDeleteDomainRequest } from './functions/user/domain/delete_domain';
 
 import { handleAddMailboxRequest } from './functions/user/mailbox/add_mailbox';
 import { handleGetMailboxRequest } from './functions/user/mailbox/get_mailbox';
@@ -214,6 +215,7 @@ app.post('/user/domain/add_domain', userLimiter, auth, jsonParser, handleAddDoma
 app.post('/user/domain/get_domain', limiter, auth, jsonParser, handleGetDomainDomainRequest);
 app.post('/user/domain/get_dns_records', limiter, auth, jsonParser, handleGetDNSRecordsRequest);
 app.post('/user/domain/get_domain_details', limiter, auth, jsonParser, handleGetDomainDetailsRequest);
+app.post('/user/domain/delete_domain', userLimiter, auth, jsonParser, handleDeleteDomainRequest);
 
 app.post('/user/mailbox/add_mailbox', userLimiter, auth, jsonParser, handleAddMailboxRequest);
 app.post('/user/mailbox/get_mailbox', limiter, auth, jsonParser, handleGetMailboxRequest);

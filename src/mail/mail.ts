@@ -439,5 +439,25 @@ module.exports.SolunApiClient = class {
         return false;
       });
   };
+
+  async deleteDomain(domains: string[]) {
+    if (!domains || !Array.isArray(domains))
+      throw new Error("Domain(s) must be provided as an array of strings.");
+    return f(`${this.baseurl}/api/v1/delete/domain`, {
+      method: "POST",
+      headers: {
+        "X-Api-Key": this.apikey,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(domains),
+    })
+      .then(async (res: { json: () => Promise<any> }) => {
+        const j = await res.json().catch();
+        if (j && j[0] && j[0].type === "success") return true;
+        console.error(j);
+        return false;
+      }
+    );
+  };
   
 };
