@@ -50,7 +50,7 @@ try {
         for (let i = 0; i < user_mailboxes.length; i++) {
             const mailbox = user_mailboxes[i];
             if(mailbox.domain === '@'+user_domains.domain) {
-                const deleteMailbox = await mcc.deleteMailbox([mailbox.fqa]);
+                const deleteMailbox = await mcc.deleteMailbox([mailbox.fqe]);
                 if (!deleteMailbox) {
                     return res.status(500).json({ message: "Something went wrong" });
                 }
