@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { dbConnect, findOneDocument, deleteOneDocument, User, User_Domains, User_Mailboxes, User_Aliases } from 'solun-database-package';
+import { dbConnect, findOneDocument, deleteOneDocument, User, User_Domains, User_Mailboxes, User_Aliases, findDocuments } from 'solun-database-package';
 const { SolunApiClient } = require("../../../mail/mail");
 
 
@@ -24,16 +24,16 @@ try {
     const user = await findOneDocument(User, { user_id: user_id });
     const user_domains = await findOneDocument(User_Domains, { user_id: user_id });
     const user_mailboxes = await findOneDocument(User_Mailboxes, { user_id: user_id, _id: mailbox_id, domain: '@'+user_domains.domain });
-    const user_aliases = await findOneDocument(User_Aliases, { user_id: user_id, domain: '@'+user_domains.domain });
+    const user_aliases = await findDocuments(User_Aliases, { user_id: user_id, domain: '@'+user_domains.domain });
 
     if (!user || !user_domains || !user_mailboxes) {
         return res.status(400).json({ message: "User does not exist or is not authorized" });
     }
 
     // Delete aliases on mailserver and database when mailbox is defined as goto address
-    if(user_aliases) {
-        while (await user_aliases.hasNext()) {
-            const alias = await user_aliases.next();
+    if(user_aliases && user_aliases.length > 0) {
+        for(let i = 0; i < user_aliases.length; i++) {
+            const alias = user_aliases[i];
             if(alias.goto === user_mailboxes.fqe) {
                 const deleteAlias = await mcc.deleteAlias([alias.fqa]);
                 if (!deleteAlias) {

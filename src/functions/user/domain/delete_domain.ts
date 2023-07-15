@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
-import { dbConnect, findOneDocument, deleteOneDocument, User, User_Domains, User_Mailboxes, User_Aliases } from 'solun-database-package';
+import { dbConnect, findOneDocument, deleteOneDocument, User, User_Domains, User_Mailboxes, User_Aliases, findDocuments } from 'solun-database-package';
 const { SolunApiClient } = require("../../../mail/mail");
-
 
 export async function handleDeleteDomainRequest(req: Request, res: Response) {
 try {
@@ -21,18 +20,18 @@ try {
     }
 
     const user = await findOneDocument(User, { user_id: user_id });
-    const user_domains = await findOneDocument(User_Domains, { user_id: user_id });
-    const user_mailboxes = await findOneDocument(User_Mailboxes, { user_id: user_id, domain: '@'+user_domains.domain });
-    const user_aliases = await findOneDocument(User_Aliases, { user_id: user_id, domain: '@'+user_domains.domain });
+    const user_domains = await findOneDocument(User_Domains, { user_id: user_id, _id: domain_id });
+    const user_mailboxes = await findDocuments(User_Mailboxes, { user_id: user_id, domain: '@'+user_domains.domain });
+    const user_aliases = await findDocuments(User_Aliases, { user_id: user_id, domain: '@'+user_domains.domain });
 
     if (!user || !user_domains) {
         return res.status(400).json({ message: "User does not exist or is not authorized" });
     }
 
     // Delete aliases on mailserver and database when domain is defined
-    if(user_aliases) {
-        while (await user_aliases.hasNext()) {
-            const alias = await user_aliases.next();
+    if(user_aliases && user_aliases.length > 0) {
+        for (let i = 0; i < user_aliases.length; i++) {
+            const alias = user_aliases[i];
             if(alias.domain === '@'+user_domains.domain) {
                 const deleteAlias = await mcc.deleteAlias([alias.fqa]);
                 if (!deleteAlias) {
@@ -47,9 +46,9 @@ try {
     }
 
     // Delete mailboxes on mailserver and database when domain is defined
-    if(user_mailboxes) {
-        while (await user_mailboxes.hasNext()) {
-            const mailbox = await user_mailboxes.next();
+    if(user_mailboxes && user_mailboxes.length > 0) {
+        for (let i = 0; i < user_mailboxes.length; i++) {
+            const mailbox = user_mailboxes[i];
             if(mailbox.domain === '@'+user_domains.domain) {
                 const deleteMailbox = await mcc.deleteMailbox([mailbox.fqa]);
                 if (!deleteMailbox) {
