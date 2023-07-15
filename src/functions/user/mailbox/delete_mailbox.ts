@@ -32,15 +32,16 @@ try {
 
     // Delete aliases on mailserver and database when mailbox is defined as goto address
     if(user_aliases) {
-        for(let i = 0; i < user_aliases.length; i++) {
-            if(user_aliases[i].goto === user_mailboxes.fqe) {
-                const deleteAlias = await mcc.deleteAlias([user_aliases[i].fqa]);
+        while (await user_aliases.hasNext()) {
+            const alias = await user_aliases.next();
+            if(alias.goto === user_mailboxes.fqe) {
+                const deleteAlias = await mcc.deleteAlias([alias.fqa]);
                 if (!deleteAlias) {
                     return res.status(500).json({ message: "Something went wrong" });
                 }
                 await deleteOneDocument(
                     User_Aliases,
-                    { user_id: user_id, _id: user_aliases[i]._id, domain: '@'+user_domains.domain }
+                    { user_id: user_id, _id: alias._id, domain: '@'+user_domains.domain }
                 );
             }
         }
