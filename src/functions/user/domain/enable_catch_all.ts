@@ -57,8 +57,8 @@ export async function handleEnableCatchAllRequest(req: Request, res: Response) {
     for (let i = 0; i < forwardingAddresses.length; i++) {
         const addAlias = await mcc.addAlias({
             active: 1,
-            address: forwardingAddresses[i],
-            goto: ['@'+domainName],
+            address: '@'+domainName,
+            goto: [forwardingAddresses[i]],
         });
     
         if (!addAlias) {
