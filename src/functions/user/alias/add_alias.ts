@@ -62,7 +62,7 @@ export async function handleCreateAliasRequest(req: Request, res: Response) {
         return res.status(400).json({ message: "Mailbox with this name already exists" });
     }
 
-    const checkIfCheckAllIsEnabled = await findOneDocument(User_Domains, { user_id: user_id, domain: domain, catch_all: true });
+    const checkIfCheckAllIsEnabled = await findOneDocument(User_Domains, { user_id: user_id, domain: domain.replace('@', ''), catch_all: true });
 
     if (checkIfCheckAllIsEnabled) {
         return res.status(400).json({ message: "You cannot create an alias on a domain with catch all enabled" });
