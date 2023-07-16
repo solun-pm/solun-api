@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { dbConnect, findOneDocument, findOneCASEDocument, User, User_Aliases, User_Mailboxes } from 'solun-database-package';
+import { dbConnect, findOneDocument, findOneCASEDocument, User, User_Aliases, User_Mailboxes, User_Domains } from 'solun-database-package';
 import { isValidEmail } from 'solun-general-package';
 const { SolunApiClient } = require("../../../mail/mail");
 import { checkPlanCaps } from '../../../plans/check';
@@ -62,6 +62,11 @@ export async function handleCreateAliasRequest(req: Request, res: Response) {
         return res.status(400).json({ message: "Mailbox with this name already exists" });
     }
 
+    const checkIfCheckAllIsEnabled = await findOneDocument(User_Domains, { user_id: user_id, domain: domain, catch_all: true });
+
+    if (checkIfCheckAllIsEnabled) {
+        return res.status(400).json({ message: "You cannot create an alias on a domain with catch all enabled" });
+    }
 
     // Create alias on mailserver
     const addAlias = await mcc.addAlias({

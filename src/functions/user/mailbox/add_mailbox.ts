@@ -77,6 +77,12 @@ export async function handleAddMailboxRequest(req: Request, res: Response) {
         return res.status(400).json({ message: "This mailbox already exists", valid: false });
     }
 
+    const checkIfCheckAllIsEnabled = await findOneDocument(User_Domains, { user_id: user_id, domain: domain.replace('@', ''), catch_all: true });
+
+    if (checkIfCheckAllIsEnabled) {
+        return res.status(400).json({ message: "You cannot create a mailbox on a domain with catch all enabled", valid: false });
+    }
+
     const passwordHashed = await hashPassword(password);
 
     // Generate OpenPGP key pair
