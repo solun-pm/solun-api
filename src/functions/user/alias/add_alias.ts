@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { dbConnect, findOneDocument, findOneCASEDocument, User, User_Aliases, User_Mailboxes } from 'solun-database-package';
+import { dbConnect, findOneDocument, findOneCASEDocument, User, User_Aliases, User_Mailboxes, User_Domains } from 'solun-database-package';
 import { isValidEmail } from 'solun-general-package';
 const { SolunApiClient } = require("../../../mail/mail");
 import { checkPlanCaps } from '../../../plans/check';
@@ -38,11 +38,13 @@ export async function handleCreateAliasRequest(req: Request, res: Response) {
         return res.status(400).json({ message: "User does not exist" });
     }
 
-    const caps = checkPlanCaps(user.membership);
-    const maxAliases = caps[0].maxAliases;
-    if (user.aliases >= maxAliases) {
-        return res.status(400).json({ message: "You have reached your maximum number of aliases for your plan", code: "geringverdiener" });
-    }
+    if (!user.admin) {
+      const caps = checkPlanCaps(user.membership);
+      const maxAliases = caps[0].maxAliases;
+      if (user.aliases >= maxAliases) {
+          return res.status(400).json({ message: "You have reached your maximum number of aliases for your plan", code: "geringverdiener" });
+      }
+    }  
     
     const checkIfFQAMailboxExists = await findOneCASEDocument(User, { fqe: fqa });
 
@@ -62,6 +64,11 @@ export async function handleCreateAliasRequest(req: Request, res: Response) {
         return res.status(400).json({ message: "Mailbox with this name already exists" });
     }
 
+    const checkIfCheckAllIsEnabled = await findOneDocument(User_Domains, { user_id: user_id, domain: domain.replace('@', ''), catch_all: true });
+
+    if (checkIfCheckAllIsEnabled) {
+        return res.status(400).json({ message: "You cannot create an alias on a domain with catch all enabled" });
+    }
 
     // Create alias on mailserver
     const addAlias = await mcc.addAlias({
