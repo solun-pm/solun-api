@@ -114,6 +114,28 @@ module.exports.SolunApiClient = class {
     }
   }
 
+  async rateLimitDomain(domain: any): Promise<boolean> {
+    if (!domain) throw new Error("Domain must be provided as Domain Object");
+
+    const response = await fetch(`${this.baseurl}/api/v1/edit/rl-domain/`, {
+      method: "POST",
+      headers: {
+        "X-Api-Key": this.apikey,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(domain),
+    });
+
+    const responseData = await response.json();
+
+    if (responseData && responseData[0] && responseData[0].type === "success") {
+      return true;
+    } else {
+      console.error(responseData);
+      return false;
+    }
+  }
+
   async addAppPassword(mailbox: any): Promise<boolean> {
       if (!mailbox) throw new Error("Mailbox must be provided as Mailbox Object");
 
@@ -358,6 +380,44 @@ module.exports.SolunApiClient = class {
       throw new Error(responseData.msg);
     }
   };
+
+  async addDKIM(dkim: any) {
+      if (!dkim) throw new Error("DKIM parameters must be provided as an object");
+
+      return f(`${this.baseurl}/api/v1/add/dkim`, {
+        method: "POST",
+        headers: {
+          "X-Api-Key": this.apikey,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dkim),
+      }).then(async (res: { json: () => Promise<any> }) => {
+        const j = await res.json().catch();
+        if (j && j[0] && j[0].type === "success") return true;
+        console.error(j);
+        return false;
+      });
+  };
+
+  async deleteDKIM(dkimIds: string[]) {
+    if (!dkimIds || !Array.isArray(dkimIds))
+      throw new Error("DKIM IDs must be provided as an array of strings.");
+
+    return f(`${this.baseurl}/api/v1/delete/dkim`, {
+      method: "POST",
+      headers: {
+        "X-Api-Key": this.apikey,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(dkimIds),
+    })
+      .then(async (res: { json: () => Promise<any> }) => {
+        const j = await res.json().catch();
+        if (j && j[0] && j[0].type === "success") return true;
+        console.error(j);
+        return false;
+      });
+  };
   
   async getDKIMForDomain(domain: string): Promise<any> {
     const endpoint = `${this.baseurl}/api/v1/get/dkim/${domain}`;
@@ -372,12 +432,52 @@ module.exports.SolunApiClient = class {
   
     const responseData = await response.json();
   
-    if (responseData && response.status === 200) {
+    if (response.ok) {
       return responseData;
     } else {
       console.error(responseData);
-      throw new Error(responseData.msg);
+      throw new Error(responseData.msg || 'Something went wrong');
     }
-  }; 
+  };
 
+  async addDomain(domain: any) {
+    if (!domain)
+      throw new Error("Domain must be provided as an object");
+  
+    return f(`${this.baseurl}/api/v1/add/domain`, {
+      method: "POST",
+      headers: {
+        "X-Api-Key": this.apikey,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(domain),
+    })
+      .then(async (res: { json: () => Promise<any> }) => {
+        const j = await res.json().catch();
+        if (j && j[0] && j[0].type === "success") return true;
+        console.error(j);
+        return false;
+      });
+  };
+
+  async deleteDomain(domains: string[]) {
+    if (!domains || !Array.isArray(domains))
+      throw new Error("Domain(s) must be provided as an array of strings.");
+    return f(`${this.baseurl}/api/v1/delete/domain`, {
+      method: "POST",
+      headers: {
+        "X-Api-Key": this.apikey,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(domains),
+    })
+      .then(async (res: { json: () => Promise<any> }) => {
+        const j = await res.json().catch();
+        if (j && j[0] && j[0].type === "success") return true;
+        console.error(j);
+        return false;
+      }
+    );
+  };
+  
 };

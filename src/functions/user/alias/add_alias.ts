@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
-import { dbConnect, findOneDocument, findOneCASEDocument, User, User_Aliases } from 'solun-database-package';
+import { dbConnect, findOneDocument, findOneCASEDocument, User, User_Aliases, User_Mailboxes } from 'solun-database-package';
+import { isValidEmail } from 'solun-general-package';
 const { SolunApiClient } = require("../../../mail/mail");
+import { checkPlanCaps } from '../../../plans/check';
 
 export async function handleCreateAliasRequest(req: Request, res: Response) {
   try {
@@ -22,10 +24,24 @@ export async function handleCreateAliasRequest(req: Request, res: Response) {
         return res.status(400).json({ message: "Please fill in all fields" });
     }
 
+    if (!isValidEmail(goto)) {
+        return res.status(400).json({ message: "Please enter a valid goto address" });
+    }
+
+    if(!isValidEmail(fqa)) {
+        return res.status(400).json({ message: "Please enter a valid alias address" });
+    }
+
     const user = await findOneDocument(User, { user_id: user_id });
 
     if (!user) {
         return res.status(400).json({ message: "User does not exist" });
+    }
+
+    const caps = checkPlanCaps(user.membership);
+    const maxAliases = caps[0].maxAliases;
+    if (user.aliases >= maxAliases) {
+        return res.status(400).json({ message: "You have reached your maximum number of aliases for your plan", code: "geringverdiener" });
     }
     
     const checkIfFQAMailboxExists = await findOneCASEDocument(User, { fqe: fqa });
@@ -39,6 +55,13 @@ export async function handleCreateAliasRequest(req: Request, res: Response) {
     if (checkIfFQAExists) {
         return res.status(400).json({ message: "Alias already exists" });
     }
+
+    const checkIfFQAIsMailbox = await findOneCASEDocument(User_Mailboxes, { fqe: fqa });
+
+    if (checkIfFQAIsMailbox) {
+        return res.status(400).json({ message: "Mailbox with this name already exists" });
+    }
+
 
     // Create alias on mailserver
     const addAlias = await mcc.addAlias({
@@ -61,6 +84,11 @@ export async function handleCreateAliasRequest(req: Request, res: Response) {
     });
 
     await newAlias.save();
+
+    await User.updateOne(
+        { user_id: user_id },
+        { $inc: { aliases: 1 } }
+    );
 
     return res.status(200).json({ message: "Alias created successfully" });
   } catch (error) {

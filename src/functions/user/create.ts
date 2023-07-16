@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { generateKey } from "openpgp";
-import { dbConnect, findOneDocument, User } from 'solun-database-package';
+import { dbConnect, findOneDocument, findOneCASEDocument, User, User_Aliases } from 'solun-database-package';
 import { hashPassword, checkUsername, checkPassword, encryptAuthPM } from 'solun-general-package';
 const { SolunApiClient } = require("../../mail/mail");
 
@@ -36,9 +36,14 @@ export async function handleCreateUserRequest(req: Request, res: Response) {
     }
 
     const user = await findOneDocument(User, { fqe: fqe });
+    const user_alias = await findOneCASEDocument(User_Aliases, { fqa: fqe });
 
     if (user) {
         return res.status(400).json({ message: "User already exists" });
+    }
+
+    if (user_alias) {
+        return res.status(400).json({ message: "This mail is already in use as an alias" });
     }
 
     const solutionCheck = await fetch('https://api.friendlycaptcha.com/api/v1/siteverify',{

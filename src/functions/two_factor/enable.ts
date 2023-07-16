@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { dbConnect, findOneDocument, updateOneDocument, User } from 'solun-database-package';
-import { encryptAuthPM } from 'solun-general-package';
 
 export async function handleEnableTwoFactorRequest(req: Request, res: Response) {
   try {
@@ -10,7 +9,6 @@ export async function handleEnableTwoFactorRequest(req: Request, res: Response) 
 
     let user_id = requestData.user_id;
     let secret = requestData.secret;
-    let password = requestData.password;
 
     const user = await findOneDocument(User, { user_id: user_id });
 
@@ -18,12 +16,10 @@ export async function handleEnableTwoFactorRequest(req: Request, res: Response) 
         return res.status(400).json({ message: 'User doest not exist or password is incorrect' });
     }
 
-    const decryptedSecret = await encryptAuthPM(secret, password);
-
     await updateOneDocument(
       User,
       { user_id: user_id },
-      { two_fa: true, two_fa_secret: decryptedSecret }
+      { two_fa: true, two_fa_secret: secret }
     );
 
     return res.status(200).json({ message: '2FA enabled successfully' });

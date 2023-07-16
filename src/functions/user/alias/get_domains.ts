@@ -1,20 +1,28 @@
 import { Request, Response } from 'express';
-import { dbConnect, findOneDocument, User } from 'solun-database-package';
+import { dbConnect, findDocuments, findOneDocument, User, User_Domains } from 'solun-database-package';
 
-export async function handleGetDomainsRequest(req: Request, res: Response) {
+export async function handleGetDomainsAliasRequest(req: Request, res: Response) {
   try {
     await dbConnect();
 
     let user_id = req.body.user_id;
 
     const user = await findOneDocument(User, { user_id: user_id });
+    const user_domains = await findDocuments(User_Domains, { user_id: user_id, verification_status: "active" });
 
-    if (user == null) {
+    if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // @todo: get USER ADDED domains from database and return them with the default ones.
     const domains = ['@solun.pm', '@6crypt.com', '@seal.pm', '@xolus.de', '@cipher.pm'];
+    
+    if (user_domains && user_domains.length) {
+      user_domains.forEach((user_domain: any) => {
+        if (user_domain.domain) {
+          domains.push(`@${user_domain.domain}`);
+        }
+      });
+    }
 
     return res.status(200).json(domains);
   } catch (error) {

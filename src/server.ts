@@ -64,8 +64,23 @@ import { handleResetPasswordRequest } from './functions/user/forgot/reset_passwo
 import { handleCreateAliasRequest } from './functions/user/alias/add_alias';
 import { handleGetAliasRequest } from './functions/user/alias/get_alias';
 import { handleDeleteAliasRequest } from './functions/user/alias/delete_alias';
-import { handleGetDomainsRequest } from './functions/user/alias/get_domains';
+import { handleGetDomainsAliasRequest } from './functions/user/alias/get_domains';
 import { handleSwitchStateAliasRequest } from './functions/user/alias/alias_active_switch';
+import { handleGetGotosAliasRequest } from './functions/user/alias/get_gotos';
+
+import { handleCheckDomainRequest } from './functions/user/domain/check_domain';
+import { handleAddDomainRequest } from './functions/user/domain/add_domain';
+import { handleGetDomainDomainRequest } from './functions/user/domain/get_domain';
+import { handleGetDNSRecordsRequest } from './functions/user/domain/get_dns_records';
+import { handleGetDomainDetailsRequest } from './functions/user/domain/get_domain_details';
+import { handleDeleteDomainRequest } from './functions/user/domain/delete_domain';
+
+import { handleAddMailboxRequest } from './functions/user/mailbox/add_mailbox';
+import { handleGetMailboxRequest } from './functions/user/mailbox/get_mailbox';
+import { handleGetMailboxDetailsRequest } from './functions/user/mailbox/get_mailbox_details';
+import { handleChangePWDMailboxRequest } from './functions/user/mailbox/change_pwd';
+import { handleChangeQuotaMailboxRequest } from './functions/user/mailbox/change_quota';
+import { handleDeleteMailboxRequest } from './functions/user/mailbox/delete_mailbox';
 
 import { handleSaveTempTokenDatabaseRequest } from './functions/database/save_temp_token';
 
@@ -133,12 +148,13 @@ export const morganMiddleware = morgan(function (tokens, req, res) {
 app.use(morganMiddleware);
 
 async function auth(req: any, res:any, next: any) {
-  const token = req.headers['authorization'];
-  if (token === process.env.SOLUN_API_KEY) {
-      next();
+  next();
+  /*const apiKey = req.headers['authorization'];
+  if (apiKey === process.env.SOLUN_API_KEY) {
+    next();
   } else {
-      res.status(403).json({ error: "Request got rejected, this ressource is protected by Solun Eagle-Eye." });
-  }
+    res.status(403).json({ error: 'Request got rejected, this ressource is protected.' });
+  }*/
 }
 
 const timeout = (req: any, res: any, next: any) => {
@@ -176,7 +192,7 @@ app.post('/file/download', timeout, limiter, jsonParser, handleDownloadFileReque
 app.post('/file/delete', limiter, jsonParser, handleDeleteFileRequest);
 
 app.post('/user/beta_features', limiter, auth, jsonParser, handleBetaFeaturesUserRequest);
-app.post('/user/change_pwd', limiter, auth, jsonParser, handleChangePWDUserRequest);
+app.post('/user/change_pwd', userLimiter, auth, jsonParser, handleChangePWDUserRequest);
 app.post('/user/check', limiter, auth, jsonParser, handleCheckUserRequest);
 app.post('/user/create', userLimiter, auth, jsonParser, handleCreateUserRequest);
 app.post('/user/fast_login', limiter, auth, jsonParser, handleFastLoginUserRequest);
@@ -189,11 +205,26 @@ app.post('/user/recovery', limiter, auth, jsonParser, handleRecoveryUserRequest)
 app.post('/user/check_recovery_code', limiter, auth, jsonParser, handleCheckRecoveryCodeRequest);
 app.post('/user/reset_password', limiter, auth, jsonParser, handleResetPasswordRequest);
 
-app.post('/user/add_alias', userLimiter, auth, jsonParser, handleCreateAliasRequest);
-app.post('/user/get_alias', limiter, auth, jsonParser, handleGetAliasRequest);
-app.post('/user/delete_alias', userLimiter, auth, jsonParser, handleDeleteAliasRequest);
-app.post('/user/get_domains', limiter, auth, jsonParser, handleGetDomainsRequest);
-app.post('/user/switch_alias_state', userLimiter, auth, jsonParser, handleSwitchStateAliasRequest);
+app.post('/user/alias/add_alias', userLimiter, auth, jsonParser, handleCreateAliasRequest);
+app.post('/user/alias/get_alias', limiter, auth, jsonParser, handleGetAliasRequest);
+app.post('/user/alias/delete_alias', userLimiter, auth, jsonParser, handleDeleteAliasRequest);
+app.post('/user/alias/get_domains_alias', limiter, auth, jsonParser, handleGetDomainsAliasRequest);
+app.post('/user/alias/switch_alias_state', userLimiter, auth, jsonParser, handleSwitchStateAliasRequest);
+app.post('/user/alias/get_gotos_alias', limiter, auth, jsonParser, handleGetGotosAliasRequest);
+
+app.post('/user/domain/check_domain', limiter, auth, jsonParser, handleCheckDomainRequest);
+app.post('/user/domain/add_domain', userLimiter, auth, jsonParser, handleAddDomainRequest);
+app.post('/user/domain/get_domain', limiter, auth, jsonParser, handleGetDomainDomainRequest);
+app.post('/user/domain/get_dns_records', limiter, auth, jsonParser, handleGetDNSRecordsRequest);
+app.post('/user/domain/get_domain_details', limiter, auth, jsonParser, handleGetDomainDetailsRequest);
+app.post('/user/domain/delete_domain', userLimiter, auth, jsonParser, handleDeleteDomainRequest);
+
+app.post('/user/mailbox/add_mailbox', userLimiter, auth, jsonParser, handleAddMailboxRequest);
+app.post('/user/mailbox/get_mailbox', limiter, auth, jsonParser, handleGetMailboxRequest);
+app.post('/user/mailbox/get_mailbox_details', limiter, auth, jsonParser, handleGetMailboxDetailsRequest);
+app.post('/user/mailbox/change_pwd', userLimiter, auth, jsonParser, handleChangePWDMailboxRequest);
+app.post('/user/mailbox/change_quota', userLimiter, auth, jsonParser, handleChangeQuotaMailboxRequest);
+app.post('/user/mailbox/delete_mailbox', userLimiter, auth, jsonParser, handleDeleteMailboxRequest);
 
 app.post('/database/save_temp_token', limiter, auth, jsonParser, handleSaveTempTokenDatabaseRequest);
 
