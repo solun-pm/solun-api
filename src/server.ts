@@ -74,6 +74,8 @@ import { handleGetDomainDomainRequest } from './functions/user/domain/get_domain
 import { handleGetDNSRecordsRequest } from './functions/user/domain/get_dns_records';
 import { handleGetDomainDetailsRequest } from './functions/user/domain/get_domain_details';
 import { handleDeleteDomainRequest } from './functions/user/domain/delete_domain';
+import { handleEnableCatchAllRequest } from './functions/user/domain/enable_catch_all';
+import { handleDisableCatchAllRequest } from './functions/user/domain/disable_catch_all';
 
 import { handleAddMailboxRequest } from './functions/user/mailbox/add_mailbox';
 import { handleGetMailboxRequest } from './functions/user/mailbox/get_mailbox';
@@ -218,6 +220,8 @@ app.post('/user/domain/get_domain', limiter, auth, jsonParser, handleGetDomainDo
 app.post('/user/domain/get_dns_records', limiter, auth, jsonParser, handleGetDNSRecordsRequest);
 app.post('/user/domain/get_domain_details', limiter, auth, jsonParser, handleGetDomainDetailsRequest);
 app.post('/user/domain/delete_domain', userLimiter, auth, jsonParser, handleDeleteDomainRequest);
+app.post('/user/domain/enable_catch_all', userLimiter, auth, jsonParser, handleEnableCatchAllRequest);
+app.post('/user/domain/disable_catch_all', userLimiter, auth, jsonParser, handleDisableCatchAllRequest);
 
 app.post('/user/mailbox/add_mailbox', userLimiter, auth, jsonParser, handleAddMailboxRequest);
 app.post('/user/mailbox/get_mailbox', limiter, auth, jsonParser, handleGetMailboxRequest);
