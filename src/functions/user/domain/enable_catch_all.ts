@@ -25,6 +25,10 @@ export async function handleEnableCatchAllRequest(req: Request, res: Response) {
         return res.status(400).json({ message: "Please enter at least one forwarding address" });
     }
 
+    if (forwardingAddresses.length > 25) {
+        return res.status(400).json({ message: "You can only enter a maximum of 25 forwarding addresses" });
+    }
+
     for (let i = 0; i < forwardingAddresses.length; i++) {
         if (!isValidEmail(forwardingAddresses[i])) {
             return res.status(400).json({ message: "Please enter a valid forwarding address" });
