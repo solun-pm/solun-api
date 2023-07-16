@@ -1,6 +1,6 @@
 {
   "name": "solun-api",
-  "version": "1.1.104",
+  "version": "1.1.105",
   "description": "Exists only to handle any requests from the Solun applications.",
   "main": "index.js",
   "scripts": {
