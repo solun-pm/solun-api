@@ -21,6 +21,10 @@ export async function handleEnableCatchAllRequest(req: Request, res: Response) {
         return res.status(400).json({ message: "Please fill in all fields" });
     }
 
+    if (forwardingAddresses.length < 1) {
+        return res.status(400).json({ message: "Please enter at least one forwarding address" });
+    }
+
     for (let i = 0; i < forwardingAddresses.length; i++) {
         if (!isValidEmail(forwardingAddresses[i])) {
             return res.status(400).json({ message: "Please enter a valid forwarding address" });
