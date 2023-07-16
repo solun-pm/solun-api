@@ -53,13 +53,13 @@ export async function handleEnableCatchAllRequest(req: Request, res: Response) {
         return res.status(400).json({ message: "User does not exist" });
     }
 
-    console.log(forwardingAddresses)
+    const seperatedAliases = forwardingAddresses.join(',');
 
     // Create aliases on mailserver
     const addAlias = await mcc.addAlias({
         active: 1,
         address: '@'+domainName,
-        goto: [forwardingAddresses],
+        goto: seperatedAliases,
     });
 
     if (!addAlias) {
