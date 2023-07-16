@@ -50,10 +50,12 @@ export async function handleAddMailboxRequest(req: Request, res: Response) {
 
     const user_details = await findOneDocument(User, { user_id: user_id });
 
-    const caps = checkPlanCaps(user_details.membership);
-    const maxMailboxes = caps[0].maxMailboxes;
-    if (user_details.mailboxes >= maxMailboxes) {
-        return res.status(400).json({ message: "You have reached your maximum number of mailboxes for your plan", valid: false, code: "geringverdiener" });
+    if (!user_details.admin) {
+      const caps = checkPlanCaps(user_details.membership);
+      const maxMailboxes = caps[0].maxMailboxes;
+      if (user_details.mailboxes >= maxMailboxes) {
+          return res.status(400).json({ message: "You have reached your maximum number of mailboxes for your plan", valid: false, code: "geringverdiener" });
+      }
     }
 
     const user = await findOneDocument(User, { fqe: fqe });

@@ -38,11 +38,13 @@ export async function handleCreateAliasRequest(req: Request, res: Response) {
         return res.status(400).json({ message: "User does not exist" });
     }
 
-    const caps = checkPlanCaps(user.membership);
-    const maxAliases = caps[0].maxAliases;
-    if (user.aliases >= maxAliases) {
-        return res.status(400).json({ message: "You have reached your maximum number of aliases for your plan", code: "geringverdiener" });
-    }
+    if (!user.admin) {
+      const caps = checkPlanCaps(user.membership);
+      const maxAliases = caps[0].maxAliases;
+      if (user.aliases >= maxAliases) {
+          return res.status(400).json({ message: "You have reached your maximum number of aliases for your plan", code: "geringverdiener" });
+      }
+    }  
     
     const checkIfFQAMailboxExists = await findOneCASEDocument(User, { fqe: fqa });
 
