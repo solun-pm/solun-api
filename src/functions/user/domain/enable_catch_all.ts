@@ -65,17 +65,6 @@ export async function handleEnableCatchAllRequest(req: Request, res: Response) {
     if (!addAlias) {
         return res.status(500).json({ message: "Something went wrong" });
     }
-    /*for (let i = 0; i < forwardingAddresses.length; i++) {
-        const addAlias = await mcc.addAlias({
-            active: 1,
-            address: '@'+domainName,
-            goto: [forwardingAddresses[i]],
-        });
-    
-        if (!addAlias) {
-            return res.status(500).json({ message: "Something went wrong" });
-        }
-    }*/
 
     await User_Domains.updateOne(
         { user_id: user_id, _id: domain_id },
