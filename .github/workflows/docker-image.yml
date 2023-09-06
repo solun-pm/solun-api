@@ -54,8 +54,9 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           
       - name: Restart Node 1
+        if: github.ref == 'refs/heads/main'
         run: |
-          curl -X POST ${{ secrets.WEBHOOK_DOMAIN }}/hooks/restart-api
+          curl -X POST ${{ secrets.RESTART_URL }}
         
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.4.1
