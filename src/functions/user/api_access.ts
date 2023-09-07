@@ -41,7 +41,8 @@ export async function handleApiAccessUserRequest(req: Request, res: Response) {
 
       await newToken.save();
     } else {
-      await deleteOneDocument(api_access, { user_id: user_id });
+      //await deleteOneDocument(api_access, { user_id: user_id });
+      await api_access.deleteOne({ user_id: user_id });
     }
 
     return res.status(200).json({ message: "Api access updated successfully", token: token });
