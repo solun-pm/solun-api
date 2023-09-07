@@ -25,12 +25,15 @@ export async function handleApiAccessUserRequest(req: Request, res: Response) {
     
     let token = null;
 
+    console.log('api_access', api_access);
     if (api_access) {
       token = generateToken();
+      console.log('token', token);
 
       const result = await findOneDocument(api_keys, { user_id: user_id });
-
+      console.log('result', result);
       if (!result) {
+        console.log('already exists');
         return res.status(400).json({ message: "Api access already exists" });
       }
 
@@ -40,9 +43,11 @@ export async function handleApiAccessUserRequest(req: Request, res: Response) {
       });
 
       await newToken.save();
+      console.log(newToken);
     } else {
-      //await deleteOneDocument(api_access, { user_id: user_id });
-      await api_access.deleteOne({ user_id: user_id });
+      console.log('deleting');
+      const deletedCount = await deleteOneDocument(api_access, { user_id: user_id });
+      console.log('deletedCount', deletedCount);
     }
 
     return res.status(200).json({ message: "Api access updated successfully", token: token });
