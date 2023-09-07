@@ -58,6 +58,7 @@ import { handleUserDetailsUserRequest } from './functions/user/user_details';
 import { handleValidatePWDUserRequest } from './functions/user/validate_pwd';
 import { handleRecoveryUserRequest } from './functions/user/recovery';
 import { handleApiAccessUserRequest } from './functions/user/api_access';
+import { handleApiDetailsUserRequest } from './functions/user/get_api_details';
 
 import { handleCheckRecoveryCodeRequest } from './functions/user/forgot/check_recovery_code';
 import { handleResetPasswordRequest } from './functions/user/forgot/reset_password';
@@ -205,6 +206,7 @@ app.post('/user/user_details', limiter, auth, jsonParser, handleUserDetailsUserR
 app.post('/user/validate_pwd', limiter, auth, jsonParser, handleValidatePWDUserRequest);
 app.post('/user/recovery', limiter, auth, jsonParser, handleRecoveryUserRequest);
 app.post('/user/api_access', userLimiter, auth, jsonParser, handleApiAccessUserRequest);
+app.post('/user/get_api_details', limiter, auth, jsonParser, handleApiDetailsUserRequest);
 
 app.post('/user/check_recovery_code', limiter, auth, jsonParser, handleCheckRecoveryCodeRequest);
 app.post('/user/reset_password', limiter, auth, jsonParser, handleResetPasswordRequest);
