@@ -17,10 +17,6 @@ export async function handleApiDetailsUserRequest(req: Request, res: Response) {
 
     const data = await findOneDocument(api_keys, {user_id: user_id});
 
-    if (!data) {
-        return res.status(400).json({message: "Api access does not exist"});
-    }
-
     return res.status(200).json({message: "Api access details retrieved successfully", data: data});
   } catch (error) {
     console.error(error);
