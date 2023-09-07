@@ -6,6 +6,7 @@ var bodyParser = require('body-parser')
 import morgan from 'morgan';
 import chalk from 'chalk';
 import cors from 'cors';
+import { checkToken } from './auth/check_customer_token';
 
 // Load environment variables:
 // dotenv.config({ path: path.join(__dirname, '.env.local') }); // Irelevant for now, but will be used in development.
@@ -159,6 +160,16 @@ async function auth(req: any, res:any, next: any) {
   } else {
     res.status(403).json({ error: 'Request got rejected, this ressource is protected.' });
   }*/
+}
+
+/* Auth handler for solun generated api keys */
+async function customer_auth(req: any, res: any, next: any) {
+  const apiKey = req.headers['authorization'];
+  if(await checkToken(apiKey)) {
+    next();
+  } else {
+    res.status(403).json({ error: 'Request got rejected, this ressource is protected.' });
+  }
 }
 
 const timeout = (req: any, res: any, next: any) => {
