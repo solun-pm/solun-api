@@ -30,7 +30,7 @@ export async function handleApiAccessUserRequest(req: Request, res: Response) {
 
       const result = await findOneDocument(api_keys, { user_id: user_id });
 
-      if (result) {
+      if (!result) {
         return res.status(400).json({ message: "Api access already exists" });
       }
 
