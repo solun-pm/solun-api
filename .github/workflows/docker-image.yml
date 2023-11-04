@@ -53,10 +53,15 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           
-      - name: Restart Node 1
+      - name: Restart Main
         if: github.ref == 'refs/heads/main'
         run: |
           curl -X POST ${{ secrets.RESTART_URL }}
+
+      - name: Restart Dev
+        if: github.ref == 'refs/heads/dev'
+        run: |
+          curl -X POST ${{ secrets.RESTART_URL_DEV }}
         
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.4.1

@@ -6,6 +6,7 @@ var bodyParser = require('body-parser')
 import morgan from 'morgan';
 import chalk from 'chalk';
 import cors from 'cors';
+import { checkToken } from './auth/check_customer_token';
 
 // Load environment variables:
 // dotenv.config({ path: path.join(__dirname, '.env.local') }); // Irelevant for now, but will be used in development.
@@ -57,6 +58,8 @@ import { handleLoginUserRequest } from './functions/user/login';
 import { handleUserDetailsUserRequest } from './functions/user/user_details';
 import { handleValidatePWDUserRequest } from './functions/user/validate_pwd';
 import { handleRecoveryUserRequest } from './functions/user/recovery';
+import { handleApiAccessUserRequest } from './functions/user/api_access';
+import { handleApiDetailsUserRequest } from './functions/user/get_api_details';
 
 import { handleCheckRecoveryCodeRequest } from './functions/user/forgot/check_recovery_code';
 import { handleResetPasswordRequest } from './functions/user/forgot/reset_password';
@@ -159,6 +162,16 @@ async function auth(req: any, res:any, next: any) {
   }*/
 }
 
+/* Auth handler for solun generated api keys */
+async function customer_auth(req: any, res: any, next: any) {
+  const apiKey = req.headers['authorization'];
+  if(await checkToken(apiKey)) {
+    next();
+  } else {
+    res.status(403).json({ error: 'Request got rejected, this ressource is protected.' });
+  }
+}
+
 const timeout = (req: any, res: any, next: any) => {
   const twentyFourHours = 24 * 60 * 60 * 1000;
 
@@ -203,6 +216,8 @@ app.post('/user/login', limiter, auth, jsonParser, handleLoginUserRequest);
 app.post('/user/user_details', limiter, auth, jsonParser, handleUserDetailsUserRequest);
 app.post('/user/validate_pwd', limiter, auth, jsonParser, handleValidatePWDUserRequest);
 app.post('/user/recovery', limiter, auth, jsonParser, handleRecoveryUserRequest);
+app.post('/user/api_access', userLimiter, auth, jsonParser, handleApiAccessUserRequest);
+app.post('/user/get_api_details', limiter, auth, jsonParser, handleApiDetailsUserRequest);
 
 app.post('/user/check_recovery_code', limiter, auth, jsonParser, handleCheckRecoveryCodeRequest);
 app.post('/user/reset_password', limiter, auth, jsonParser, handleResetPasswordRequest);
