@@ -192,7 +192,7 @@ const timeout = (req: any, res: any, next: any) => {
  
 
 app.get('/', (req, res) => {
-  res.status(404).json({ message: "This is the Solun API server, please refer to the documentation for more information." });
+  res.status(200).json({ message: "This is the Solun API server, please refer to the documentation for more information." });
 });
 
 app.post('/message/create', limiter, jsonParser, handleCreateMessageRequest);
