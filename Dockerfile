@@ -5,7 +5,7 @@ WORKDIR /src
 
 COPY . .
 
-RUN npm ci
+RUN npm install --force
 
 ENV NEXT_PUBLIC_SITE_KEY=
 ENV CAPTCHA_KEY=
