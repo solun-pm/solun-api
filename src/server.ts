@@ -102,6 +102,7 @@ import { handleApiLogStatsRequest } from './functions/stats/api_log';
 
 //: Express and Body Parser setup
 const app = express();
+app.use(express.json({ limit: '2500mb' }));
 const jsonParser = bodyParser.json()
 
 app.set('trust proxy', true);
