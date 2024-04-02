@@ -22,7 +22,7 @@ export async function handleGetDomainsAliasRequest(req: Request, res: Response) 
       return res.status(404).json({ message: "User not found" });
     }
 
-    const domains = ['@solun.pm', '@6crypt.com', '@seal.pm', '@xolus.de', '@cipher.pm'];
+    const domains = ['@solun.pm'];
     
     if (user_domains && user_domains.length) {
       user_domains.forEach((user_domain: any) => {
