@@ -1,11 +1,17 @@
 import { Request, Response } from 'express';
 import { dbConnect, findOneDocument, updateOneDocument, User } from 'solun-database-package';
+import { getJWTData } from '../../utils/jwt';
 
 export async function handleRecoveryUserRequest(req: Request, res: Response) {
   try {
+    const jwt_data = getJWTData(req.body.token) as { user_id: string } | null;
+
+    if (jwt_data == null) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
     await dbConnect();
 
-    let user_id = req.body.user_id;
+    let user_id = jwt_data.user_id;
     let recovery = req.body.enableRecovery;
     let code = req.body.recoveryCode;
 

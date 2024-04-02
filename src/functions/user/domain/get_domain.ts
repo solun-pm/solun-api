@@ -1,13 +1,21 @@
 import { Request, Response } from 'express';
 import { dbConnect, findOneDocument, findDocuments, User, User_Aliases, User_Domains, User_Mailboxes } from 'solun-database-package';
+import { getJWTData } from '../../../utils/jwt';
 
 export async function handleGetDomainDomainRequest(req: Request, res: Response) {
     let mailbox_cap = 0;
     let alias_cap = 0;
   try {
+    
+    const jwt_data = getJWTData(req.body.token) as { user_id: string } | null;
+
+    if (jwt_data == null) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
     await dbConnect();
 
-    let user_id = req.body.user_id;
+    let user_id = jwt_data.user_id;
 
     const user = await findOneDocument(User, { user_id: user_id });
 

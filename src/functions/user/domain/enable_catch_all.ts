@@ -1,10 +1,17 @@
 import { Request, Response } from 'express';
 import { dbConnect, findOneDocument, findOneCASEDocument, findDocuments, User, User_Aliases, User_Domains, User_Mailboxes } from 'solun-database-package';
 import { isValidEmail } from 'solun-general-package';
+import { getJWTData } from '../../../utils/jwt';
 const { SolunApiClient } = require("../../../mail/mail");
 
 export async function handleEnableCatchAllRequest(req: Request, res: Response) {
   try {
+
+    const jwt_data = getJWTData(req.body.token) as { user_id: string } | null;
+
+    if (jwt_data == null) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
 
     await dbConnect();
   
@@ -13,7 +20,7 @@ export async function handleEnableCatchAllRequest(req: Request, res: Response) {
       process.env.MAILSERVER_API_KEY
     );
 
-    let user_id = req.body.user_id;
+    let user_id = jwt_data.user_id;
     let domain_id = req.body.domain_id;
     let forwardingAddresses = req.body.forwarding_addresses;
 
