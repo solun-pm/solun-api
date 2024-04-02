@@ -1,10 +1,18 @@
 import { Request, Response } from 'express';
 import { dbConnect, findOneDocument, deleteOneDocument, User, User_Domains, User_Mailboxes, User_Aliases, findDocuments } from 'solun-database-package';
+import { getJWTData } from '../../../utils/jwt';
 const { SolunApiClient } = require("../../../mail/mail");
 
 
 export async function handleDeleteMailboxRequest(req: Request, res: Response) {
 try {
+
+    const jwt_data = getJWTData(req.body.token) as { user_id: string } | null;
+
+    if (jwt_data == null) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    
     const requestData = req.body;
 
     await dbConnect();
@@ -13,7 +21,7 @@ try {
         process.env.MAILSERVER_API_KEY
     );
 
-    let user_id = requestData.user_id;
+    let user_id = jwt_data.user_id;
     let domain_id = requestData.domain_id;
     let mailbox_id = requestData.mailbox_id;
 

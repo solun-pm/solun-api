@@ -1,9 +1,17 @@
 import { Request, Response } from 'express';
 import { dbConnect, findOneDocument, updateOneDocument, User, User_Aliases } from 'solun-database-package';
+import { getJWTData } from '../../../utils/jwt';
 const { SolunApiClient } = require("../../../mail/mail");
 
 export async function handleSwitchStateAliasRequest(req: Request, res: Response) {
   try {
+    
+    const jwt_data = getJWTData(req.body.token) as { user_id: string } | null;
+
+    if (jwt_data == null) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
     await dbConnect();
 
     const mcc = new SolunApiClient(
@@ -11,7 +19,7 @@ export async function handleSwitchStateAliasRequest(req: Request, res: Response)
         process.env.MAILSERVER_API_KEY
       );
   
-      let user_id = req.body.user_id;
+      let user_id = jwt_data.user_id;
       let fqa = req.body.fqa;
       let alias_state = req.body.alias_state;
 

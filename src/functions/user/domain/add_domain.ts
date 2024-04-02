@@ -2,9 +2,16 @@ import { Request, Response } from 'express';
 import { dbConnect, findOneDocument, findOneCASEDocument, User, User_Domains } from 'solun-database-package';
 const { SolunApiClient } = require("../../../mail/mail");
 import { checkPlanCaps } from '../../../plans/check';
+import { getJWTData } from '../../../utils/jwt';
 
 export async function handleAddDomainRequest(req: Request, res: Response) {
   try {
+
+    const jwt_data = getJWTData(req.body.token) as { user_id: string } | null;
+
+    if (jwt_data == null) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
 
     await dbConnect();
   
@@ -13,7 +20,7 @@ export async function handleAddDomainRequest(req: Request, res: Response) {
       process.env.MAILSERVER_API_KEY
     );
 
-    let user_id = req.body.user_id;
+    let user_id = jwt_data.user_id;
     let domain = req.body.domain;
 
     if (!user_id || !domain) {

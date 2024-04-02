@@ -14,10 +14,6 @@ export async function handleCheckUserRequest(req: Request, res: Response) {
     // TODO: Move to config file.
     const SolunOwnedDomains = [
       "@solun.pm",
-      "@6crypt.com",
-      "@seal.pm",
-      "@xolus.de",
-      "@cipher.pm",
     ];
 
     const isSolunDomain = SolunOwnedDomains.includes(domain) ? true : false;

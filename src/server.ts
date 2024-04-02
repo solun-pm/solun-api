@@ -7,6 +7,7 @@ import morgan from 'morgan';
 import chalk from 'chalk';
 import cors from 'cors';
 import { checkToken } from './auth/check_customer_token';
+import jwt from 'jsonwebtoken';
 
 // Load environment variables:
 // dotenv.config({ path: path.join(__dirname, '.env.local') }); // Irelevant for now, but will be used in development.
@@ -154,13 +155,18 @@ export const morganMiddleware = morgan(function (tokens, req, res) {
 app.use(morganMiddleware);
 
 async function auth(req: any, res:any, next: any) {
-  next();
-  /*const apiKey = req.headers['authorization'];
-  if (apiKey === process.env.SOLUN_API_KEY) {
-    next();
+  const token = req.body.token;
+  if(token) {
+    jwt.verify(token, process.env.JWT_SECRET as string, (err: any, decoded: any) => {
+      if(err) {
+        res.status(403).json({ error: 'Request got rejected, this ressource is protected.' });
+      } else {
+        next();
+      }
+    });
   } else {
     res.status(403).json({ error: 'Request got rejected, this ressource is protected.' });
-  }*/
+  }
 }
 
 /* Auth handler for solun generated api keys */
@@ -209,19 +215,19 @@ app.post('/file/delete', limiter, jsonParser, handleDeleteFileRequest);
 
 app.post('/user/beta_features', limiter, auth, jsonParser, handleBetaFeaturesUserRequest);
 app.post('/user/change_pwd', userLimiter, auth, jsonParser, handleChangePWDUserRequest);
-app.post('/user/check', limiter, auth, jsonParser, handleCheckUserRequest);
-app.post('/user/create', userLimiter, auth, jsonParser, handleCreateUserRequest);
+app.post('/user/check', limiter, jsonParser, handleCheckUserRequest);
+app.post('/user/create', userLimiter, jsonParser, handleCreateUserRequest);
 app.post('/user/fast_login', limiter, auth, jsonParser, handleFastLoginUserRequest);
 app.post('/user/jwt_details', limiter, auth, jsonParser, handleJWTDetailsUserRequest);
-app.post('/user/login', limiter, auth, jsonParser, handleLoginUserRequest);
+app.post('/user/login', limiter, jsonParser, handleLoginUserRequest);
 app.post('/user/user_details', limiter, auth, jsonParser, handleUserDetailsUserRequest);
 app.post('/user/validate_pwd', limiter, auth, jsonParser, handleValidatePWDUserRequest);
-app.post('/user/recovery', limiter, auth, jsonParser, handleRecoveryUserRequest);
+app.post('/user/recovery', limiter, jsonParser, handleRecoveryUserRequest);
 app.post('/user/api_access', userLimiter, auth, jsonParser, handleApiAccessUserRequest);
 app.post('/user/get_api_details', limiter, auth, jsonParser, handleApiDetailsUserRequest);
 
-app.post('/user/check_recovery_code', limiter, auth, jsonParser, handleCheckRecoveryCodeRequest);
-app.post('/user/reset_password', limiter, auth, jsonParser, handleResetPasswordRequest);
+app.post('/user/check_recovery_code', limiter, jsonParser, handleCheckRecoveryCodeRequest);
+app.post('/user/reset_password', limiter, jsonParser, handleResetPasswordRequest);
 
 app.post('/user/alias/add_alias', userLimiter, auth, jsonParser, handleCreateAliasRequest);
 app.post('/user/alias/get_alias', limiter, auth, jsonParser, handleGetAliasRequest);
@@ -233,7 +239,7 @@ app.post('/user/alias/get_gotos_alias', limiter, auth, jsonParser, handleGetGoto
 app.post('/user/domain/check_domain', limiter, auth, jsonParser, handleCheckDomainRequest);
 app.post('/user/domain/add_domain', userLimiter, auth, jsonParser, handleAddDomainRequest);
 app.post('/user/domain/get_domain', limiter, auth, jsonParser, handleGetDomainDomainRequest);
-app.post('/user/domain/get_dns_records', limiter, auth, jsonParser, handleGetDNSRecordsRequest);
+app.post('/user/domain/get_dns_records', limiter, jsonParser, handleGetDNSRecordsRequest);
 app.post('/user/domain/get_domain_details', limiter, auth, jsonParser, handleGetDomainDetailsRequest);
 app.post('/user/domain/delete_domain', userLimiter, auth, jsonParser, handleDeleteDomainRequest);
 app.post('/user/domain/enable_catch_all', userLimiter, auth, jsonParser, handleEnableCatchAllRequest);
@@ -248,7 +254,7 @@ app.post('/user/mailbox/delete_mailbox', userLimiter, auth, jsonParser, handleDe
 
 app.post('/database/save_temp_token', limiter, auth, jsonParser, handleSaveTempTokenDatabaseRequest);
 
-app.post('/two_factor/verify', limiter, auth, jsonParser, handleVerifyTwoFactorRequest);
+app.post('/two_factor/verify', limiter, jsonParser, handleVerifyTwoFactorRequest);
 app.post('/two_factor/enable', limiter, auth, jsonParser, handleEnableTwoFactorRequest);
 app.post('/two_factor/disable', limiter, auth, jsonParser, handleDisableTwoFactorRequest);
 

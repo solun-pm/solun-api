@@ -4,9 +4,16 @@ import { dbConnect, findOneDocument, User, User_Mailboxes, User_Aliases, User_Do
 import { hashPassword, checkUsername, checkPassword, encryptAuthPM } from 'solun-general-package';
 const { SolunApiClient } = require("../../../mail/mail");
 import { checkPlanCaps } from '../../../plans/check';
+import { getJWTData } from '../../../utils/jwt';
 
 export async function handleAddMailboxRequest(req: Request, res: Response) {
   try {
+
+    const jwt_data = getJWTData(req.body.token) as { user_id: string } | null;
+
+    if (jwt_data == null) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
 
     await dbConnect();
   
@@ -15,7 +22,7 @@ export async function handleAddMailboxRequest(req: Request, res: Response) {
       process.env.MAILSERVER_API_KEY
     );
 
-    let user_id = req.body.user_id;
+    let user_id = jwt_data.user_id;
     let username = req.body.username;
     let domain = req.body.domain;
     let fqe = `${username}${domain}`;
@@ -30,10 +37,6 @@ export async function handleAddMailboxRequest(req: Request, res: Response) {
      // TODO: Move to config file.
      const SolunOwnedDomains = [
       "@solun.pm",
-      "@6crypt.com",
-      "@seal.pm",
-      "@xolus.de",
-      "@cipher.pm",
     ];
 
     const isSolunDomain = SolunOwnedDomains.includes(domain) ? true : false;
