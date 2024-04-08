@@ -157,7 +157,7 @@ app.use(morganMiddleware);
 async function auth(req: any, res:any, next: any) {
   const token = req.body.token;
   if(token) {
-    jwt.verify(token, process.env.JWT_SECRET as string, (err: any, decoded: any) => {
+    jwt.verify(token, process.env.JWT_SECRET_KEY as string, (err: any, decoded: any) => {
       if(err) {
         res.status(403).json({ error: 'Request got rejected, this ressource is protected.' });
       } else {
